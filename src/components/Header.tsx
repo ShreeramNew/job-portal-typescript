@@ -14,7 +14,7 @@ export default function Header() {
                </span>
             </h1>
 
-            <div className="cursor-pointer w-[160px] md:scale-[1.3] lg:scale-[1.3] bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center hover:scale-[1.32] absolute bottom-[-130px] right-[-10px] md:bottom-[50px] md:right-[500px] lg:bottom-[50px] lg:right-[500px]  hover:animate-pulse">
+            <div className="cursor-pointer w-[160px] md:scale-[1.3] lg:scale-[1.3] bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center md:hover:scale-[1.32] absolute bottom-[-130px] right-[-10px] md:bottom-[50px] md:right-[500px] lg:bottom-[50px] lg:right-[500px]  hover:animate-pulse">
                Register Now <GoArrowUpRight color="white" />
             </div>
          </div>

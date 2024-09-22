@@ -14,7 +14,7 @@ export default function NavBar() {
    const router = useRouter();
    return (
       <div className="hidden w-full md:flex justify-center items-center gap-[30px] sticky top-0 z-50 bg-gray-300 p-[20px] ">
-         <div className=" absolute left-[150px] z-[60]" onClick={() => router.push("/main/home")}>
+         <div className=" absolute left-[150px] z-[60] cursor-pointer" onClick={() => router.push("/main/home")}>
             <Image alt="logo" src={"/logo-no-background.svg"} width={150} height={150} />
          </div>
          <div className="cursor-pointer hover:underline" onClick={() => router.push("/main/home")}>
