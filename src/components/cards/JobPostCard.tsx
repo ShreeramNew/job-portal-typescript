@@ -5,7 +5,7 @@ import { FaBusinessTime } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
 export default function JobPostCard() {
    return (
-      <div className=" w-full min-h-[156px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg ">
+      <div className=" w-full min-h-[186px] md:min-h-[156px] lg:min-h-[156px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />
@@ -19,7 +19,7 @@ export default function JobPostCard() {
             <FaBusinessTime size={20} color="gray" />
             <div>0-1 year</div>
          </div>
-         <div className=" flex flex-col justify-start items-start  w-[300px] absolute left-[10px] top-[50%]">
+         <div className=" flex flex-col justify-start items-start  w-[300px] absolute left-[10px] top-[45%] md:top-[50%] lg:top-[50%]">
             <div className="flex gap-[5px] justify-center items-center text-[13.4px] text-gray-600">
                <GiMoneyStack />
                <div>₹5LPA-₹6LPA</div>
@@ -29,7 +29,7 @@ export default function JobPostCard() {
                <div>Banglore,Karnataka</div>
             </div>
          </div>
-         <div className=" w-full h-[30px] absolute bottom-0 overflow-hidden flex gap-[14px] items-center pl-[10px]">
+         <div className=" w-full h-[30px] absolute bottom-[20px] md:bottom-0 lg:bottom-0 overflow-hidden flex gap-[14px] items-center pl-[10px]">
             <SkillCard title="React.JS" />
             <SkillCard title="Next.JS" />
             <SkillCard title="Node.JS" />
@@ -50,3 +50,4 @@ const SkillCard = ({ title }: { title: string }) => {
       </div>
    );
 };
+
