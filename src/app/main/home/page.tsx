@@ -1,9 +1,9 @@
 "use client";
-import Categories from "@/components/Categories";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import SuccessStories from "@/components/SuccessStories";
-import TopCompanies from "@/components/TopCompanies";
+import Categories from "@/components/homeComponents/Categories";
+import Footer from "@/components/homeComponents/Footer";
+import Header from "@/components/homeComponents/Header";
+import SuccessStories from "@/components/homeComponents/SuccessStories";
+import TopCompanies from "@/components/homeComponents/TopCompanies";
 
 export default function Home() {
    return (

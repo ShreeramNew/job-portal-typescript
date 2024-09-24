@@ -1,4 +1,4 @@
-import CategoryCard from "./cards/CategoryCard";
+import CategoryCard from "../cards/CategoryCard";
 import { v4 as uuidv4 } from "uuid";
 export default function Categories() {
    type category = {
