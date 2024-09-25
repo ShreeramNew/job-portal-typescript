@@ -84,15 +84,15 @@ export default function FilterCard() {
       console.log(key);
    };
    return (
-      <div className="w-[300px] h-[99vh] bg-white border-2 border-gray-100 ml-[60px] mt-[10px] shadow-2xl rounded-xl">
-         <div className=" flex justify-between items-center p-[20px] border-b- border-gray-800">
+      <div className="w-[100%] lg:w-[300px] h-[99vh] bg-white border-2 border-gray-100 lg:ml-[60px] lg:mt-[10px] shadow-2xl rounded-xl">
+         <div className="hidden lg:flex md:flex justify-between items-center p-[20px] border-b- border-gray-800">
             <div className=" flex justify-center items-center gap-[8px]">
                <div>Filters</div>
                <HiOutlineAdjustmentsVertical />
             </div>
             <div className="text-blue-400 cursor-pointer">Clear</div>
          </div>
-         <hr />
+         <hr className="hidden md:block lg:block" />
          <div className="font-bold">
             <Collapse
                items={items}

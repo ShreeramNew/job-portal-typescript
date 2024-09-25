@@ -5,6 +5,9 @@ import NoResult from "@/components/caseHandlers/NoResult";
 import { pushResult } from "@/features/SearchSlice";
 import { RootState } from "@/store/Store";
 import { useDispatch, useSelector } from "react-redux";
+import { HiOutlineAdjustmentsVertical } from "react-icons/hi2";
+import { Drawer } from "antd";
+import { useState } from "react";
 
 const JobData = [
    {
@@ -120,13 +123,33 @@ export default function Page() {
 }
 
 const ListOfJobs = () => {
+   const [open, setOpen] = useState(false);
+   const showDrawer = () => {
+      setOpen(true);
+   };
+   const onClose = () => {
+      setOpen(false);
+   };
+
    return (
-      <div className=" flex justify-center items-center overflow-hidden ">
+      <div className=" flex justify-center items-center overflow-hidden relative ">
          <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh] relative pt-[60px]">
             <FilterCard />
          </div>
-         
-         <div className=" flex flex-col w-[700px] h-[110vh] gap-[20px] overflow-y-scroll p-[10px] pt-[13%] md:pt-[60px] lg:pt-[60px]">
+         <div className=" md:hidden lg:hidden absolute top-[5%] right-2 rotate-90 z-[400]" onClick={()=>showDrawer()}>
+            <HiOutlineAdjustmentsVertical size={26} />
+         </div>
+
+         <Drawer
+            style={{ background: "white",padding:"0px" }}
+            placement="right"
+            width={"300px"}
+            onClose={onClose}
+            open={open}
+         >
+            <FilterCard/>
+         </Drawer>
+         <div className=" flex flex-col w-[700px] h-[110vh] gap-[20px] overflow-y-scroll p-[10px] pt-[20%] md:pt-[60px] lg:pt-[60px]">
             {JobData.map((job) => {
                return (
                   <JobPostCard
