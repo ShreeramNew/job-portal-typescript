@@ -123,7 +123,7 @@ export default function Page() {
 }
 
 const ListOfJobs = () => {
-   const [open, setOpen] = useState(false);
+   const [open, setOpen] = useState<boolean>(false);
    const showDrawer = () => {
       setOpen(true);
    };

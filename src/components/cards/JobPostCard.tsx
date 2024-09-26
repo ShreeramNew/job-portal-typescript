@@ -3,6 +3,7 @@ import { GiMoneyStack } from "react-icons/gi";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaBusinessTime } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 interface PropsType {
    id: string;
@@ -28,8 +29,9 @@ export default function JobPostCard({
    skills,
    time,
 }: PropsType) {
+   const router=useRouter();
    return (
-      <div className=" w-full min-h-[186px] md:min-h-[156px] lg:min-h-[156px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
+      <div className=" w-full min-h-[186px] md:min-h-[156px] lg:min-h-[156px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer " onClick={()=>router.push("/main/jobDetail/"+id)}>
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />
