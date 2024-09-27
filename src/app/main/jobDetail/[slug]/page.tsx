@@ -17,7 +17,7 @@ import { GiOfficeChair } from "react-icons/gi";
 import { TbTie } from "react-icons/tb";
 import { FaUserTie } from "react-icons/fa6";
 import { HiOutlineDocumentText } from "react-icons/hi2";
-
+import { BsCaretRightFill } from "react-icons/bs";
 export default function Page() {
    //This data will come from backend
    const JobData = {
@@ -35,9 +35,27 @@ export default function Page() {
 
    const [isDescriptionOpen, SetIsDescriptionOpen] = useState<boolean>(true);
 
+   const Responsibilities: string[] = [
+      "Develop front-end and back-end solutions using the latest web technologies.",
+      "Collaborate with product management and design teams to define and implement new features.",
+      "Build reusable code and libraries for future use. Optimize applications for maximum speed and scalability.",
+      "Implement security and data protection measures.",
+      "Conduct unit testing and troubleshooting. Stay updated on emerging technologies and industry trends.",
+   ];
+   const Requiremnets: string[] = [
+      "Proven experience as a Full Stack Developer or similar role",
+      "Proficiency in front-end development languages such as HTML, CSS, JavaScript, and frameworks like React.js.",
+      "Solid understanding of back-end development languages such as Node.js, Python, Ruby, or PHP.",
+      "Experience with database technologies (e.g., MySQL, MongoDB).",
+      "Knowledge of RESTful API design and development.",
+      "Familiarity with version control systems (e.g., Git).",
+      "Excellent communication and collaboration skills.",
+      "Bachelor's degree in Computer Science, Engineering, or a related field (preferred).",
+   ];
+
    return (
       <div className="w-screen h-[89vh] grid grid-cols-12  bg-blue-900 overflow-x-hidden">
-         <div className=" col-span-12 md:col-span-8 bg-yellow-900 h-[89vh] overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden">
+         <div className=" col-span-12 md:col-span-8 bg-yellow-900 overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden">
             <div className="border- w-full border-yellow-600 h-[40%] md:h-[35%] lg:h-[35%]">
                <JobHighlight
                   key={JobData.id}
@@ -53,8 +71,8 @@ export default function Page() {
                   time={JobData.time}
                />
             </div>
-            <div className="bg-gray-100 shadow-lg w-full h-[70vh] rounded-lg border-2 border-gray-200 mt-[10px] relative">
-               <div className="w-full h-[8%] absolute top-0 border-b- border-gray-900 flex justify-start items-center gap-[10px] pl-[10px]">
+            <div className="bg-gray-100 shadow-lg w-full h-auto rounded-lg border-2 border-gray-200 mt-[10px] relative">
+               <div className="w-full h-[8%] absolute top-[-2%] text-[1.2rem] md:text-[1rem] md:top-0 border-b- border-gray-900 flex justify-start items-center gap-[10px] pl-[10px]">
                   <div
                      onClick={() => SetIsDescriptionOpen(true)}
                      className={`${
@@ -72,31 +90,43 @@ export default function Page() {
                      About
                   </div>
                </div>
-               <div>
-                  Job Title: Full Stack Developer Company: [Your Company Name] Location: [City,
-                  State/Province] Job Type: Full-time Salary: Competitive About [Your Company Name]:
-                  [Your Company Name] is a leading tech startup focused on revolutionizing the
-                  [industry sector]. We are committed to creating innovative solutions that redefine
-                  how [specific industry aspect] is approached. Role Overview: We are seeking a
-                  talented Full Stack Developer to join our dynamic team. As a Full Stack Developer,
-                  you will be responsible for designing, developing, and implementing software
-                  solutions across both front-end and back-end technologies. You will work closely
-                  with our product management and design teams to ensure all applications meet the
-                  highest standards of usability, scalability, and reliability. Key
-                  Responsibilities: Develop front-end and back-end solutions using the latest web
-                  technologies. Collaborate with product management and design teams to define and
-                  implement new features. Build reusable code and libraries for future use. Optimize
-                  applications for maximum speed and scalability. Implement security and data
-                  protection measures. Conduct unit testing and troubleshooting. Stay updated on
-                  emerging technologies and industry trends. Required Skills and Qualifications:
-                  Proven experience as a Full Stack Developer or similar role. Proficiency in
-                  front-end development languages such as HTML, CSS, JavaScript, and frameworks like
-                  React.js. Solid understanding of back-end development languages such as Node.js,
-                  Python, Ruby, or PHP. Experience with database technologies (e.g., MySQL,
-                  MongoDB). Knowledge of RESTful API design and development. Familiarity with
-                  version control systems (e.g., Git). Excellent communication and collaboration
-                  skills. Bachelor’s degree in Computer Science, Engineering, or a related field
-                  (preferred).
+               <div className=" mt-[14%] md:mt-[6%] p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem]">
+                  <div className=" w-full flex gap-[10px] items-center">
+                     <div className="font-bold">Job Title:</div>
+                     <div>Full Stack Developer</div>
+                  </div>
+                  <div className=" w-full flex gap-[10px] items-center">
+                     <div className="font-bold">Company:</div>
+                     <div>[Your Company Name]</div>
+                  </div>
+                  <div className=" w-full flex gap-[10px] items-center">
+                     <div className="font-bold"> Location:</div>
+                     <div> [City, State/Province] </div>
+                  </div>
+                  <div className=" w-full flex gap-[10px] items-center">
+                     <div className="font-bold">Job Type:</div>
+                     <div>Full-time</div>
+                  </div>
+                  <div className=" w-full flex gap-[10px] items-center">
+                     <div className="font-bold">Salary:</div>
+                     <div>Competitive</div>
+                  </div>
+                  <div className=" w-full gap-[10px] items-center">
+                     <div className="font-bold">Key Responsibilities:</div>
+                     <div>
+                        {Responsibilities.map((point: string) => (
+                           <BulletPoints point={point} />
+                        ))}
+                     </div>
+                  </div>
+                  <div className=" w-full gap-[10px] items-center">
+                     <div className="font-bold">Required Skills and Qualifications:</div>
+                     <div>
+                        {Requiremnets.map((point: string) => (
+                           <BulletPoints point={point} />
+                        ))}
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
@@ -104,6 +134,17 @@ export default function Page() {
       </div>
    );
 }
+
+const BulletPoints = ({ point }: { point: string }) => {
+   return (
+      <div className=" flex w-full border- border-red-900">
+         <div className="mt-[1%] md:mt-[0.2%]">
+            <BsCaretRightFill color="gray" size={15} />
+         </div>
+         {point}
+      </div>
+   );
+};
 
 interface PropsType {
    id: string;

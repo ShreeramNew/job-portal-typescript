@@ -136,7 +136,7 @@ const ListOfJobs = () => {
          <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh] relative pt-[60px]">
             <FilterCard />
          </div>
-         <div className=" md:hidden lg:hidden absolute top-[5%] right-2 rotate-90 z-[400]" onClick={()=>showDrawer()}>
+         <div className=" md:hidden lg:hidden absolute top-[5%] right-2 rotate-90 z-[-1]" onClick={()=>showDrawer()}>
             <HiOutlineAdjustmentsVertical size={26} />
          </div>
 
