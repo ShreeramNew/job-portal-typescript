@@ -44,7 +44,7 @@ export default function JobPostCard({
          <div className="text-[14px] text-gray-800 absolute top-[10px] right-[10px] flex justify-center items-center gap-[4px]">
             <FaBusinessTime size={20} color="gray" />
             <div>
-               {minYear}-{maxYear}Year
+               {minYear}-{maxYear} Year
             </div>
          </div>
          <div className=" flex flex-col justify-start items-start  w-[300px] absolute left-[10px] top-[45%] md:top-[50%] lg:top-[50%]">
