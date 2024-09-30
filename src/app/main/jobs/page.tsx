@@ -132,7 +132,7 @@ const ListOfJobs = () => {
    };
 
    return (
-      <div className=" flex justify-center items-center overflow-hidden relative ">
+      <div className=" flex justify-center items-center overflow-x-hidden relative ">
          <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh] relative pt-[60px]">
             <FilterCard />
          </div>
