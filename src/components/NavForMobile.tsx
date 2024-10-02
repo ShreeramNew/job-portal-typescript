@@ -88,10 +88,16 @@ export default function NavForMobile() {
                   Jobs
                </div>
                <div className="cursor-pointer hover:underline">Companies</div>
-               <div className="cursor-pointer bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center">
+               <div
+                  className="cursor-pointer bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center"
+                  onClick={() => router.push("/login")}
+               >
                   Get Started <GoArrowUpRight color="white" />
                </div>
-               <div className="cursor-pointer bg-gray-700 p-[10px] rounded-md text-white flex items-center justify-center">
+               <div
+                  className="cursor-pointer bg-gray-700 p-[10px] rounded-md text-white flex items-center justify-center"
+                  onClick={() => router.push("/login/employer")}
+               >
                   Employer <GoArrowUpRight color="white" />
                </div>
             </div>

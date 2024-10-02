@@ -1,8 +1,10 @@
 "use client";
 import { GoArrowUpRight } from "react-icons/go";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+   const router=useRouter();
    return (
       <div className="w-full bg-gray-900 h-[500px] gap-[20px] p-[50px] justify-center items-center flex md:gap-[330px] lg:gap-[330px] md:p-[50px] lg:p-[50px] md:h-[550px] ">
          <div className="md:flex md:flex-col md:gap-[40px] lg:flex lg:flex-col lg:gap-[40px] md:h-[400px] md:w-[800px] lg:h-[400px] lg:w-[600px] relative">
@@ -14,7 +16,7 @@ export default function Header() {
                </span>
             </h1>
 
-            <div className="cursor-pointer w-[160px] md:scale-[1.3] lg:scale-[1.3] bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center md:hover:scale-[1.32] absolute bottom-[-130px] right-[-10px] md:bottom-[50px] md:right-[500px] lg:bottom-[50px] lg:right-[500px]  hover:animate-pulse">
+            <div className="cursor-pointer w-[160px] md:scale-[1.3] lg:scale-[1.3] bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center md:hover:scale-[1.32] absolute bottom-[-130px] right-[-10px] md:bottom-[50px] md:right-[500px] lg:bottom-[50px] lg:right-[500px]  hover:animate-pulse" onClick={()=>router.push("/login")}>
                Register Now <GoArrowUpRight color="white" />
             </div>
          </div>

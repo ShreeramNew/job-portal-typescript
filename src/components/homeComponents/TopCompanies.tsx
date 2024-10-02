@@ -59,9 +59,9 @@ export default function TopCompanies() {
       },
    ];
    return (
-      <div className=" flex flex-col justify-center items-center">
-         <h2 className=" m-[20px] mt-[30px] text-[23px]">Top Companies Hiring</h2>
-         <div className=" grid grid-cols-[1fr] md:grid-cols-[1fr_1fr_1fr] gap-[70px]">
+      <div className=" flex flex-col justify-center items-center bg-gray-50">
+         <h2 className=" m-[15px] mt-[13%] md:m-[0px] md:mt-[6%] text-[1.6rem] bg-transparent">Top Companies Hiring</h2>
+         <div className=" flex overflow-x-scroll w-screen h-[25vh] md:h-[35vh] items-center px-[20px] gap-[20px] border- border-red-900">
             {companies.map((company) => {
                return (
                   <CompaniesCard

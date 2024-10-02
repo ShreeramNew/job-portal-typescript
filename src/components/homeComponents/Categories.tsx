@@ -50,8 +50,8 @@ export default function Categories() {
 
    return (
       <div className=" flex flex-col justify-center items-center">
-         <h2 className=" m-[20px] text-[23px]">Browse Career Fields</h2>
-         <div className=" grid grid-cols-[1fr] md:grid-cols-[1fr_1fr_1fr_1fr] gap-[40px]">
+         <h2 className=" m-[20px] text-[1.6rem]">Browse Career Fields</h2>
+         <div className=" flex items-center w-screen overflow-x-scroll gap-[20px] h-[35vh] md:h-[45vh] px-[20px] border- border-red-900">
             {categories.map((item: category) => {
                return (
                   <CategoryCard

@@ -9,7 +9,7 @@ type propsType = {
 };
 export default function CompaniesCard({ imageURL, name, openings }: propsType) {
    return (
-      <div className=" w-[310px] h-[110px] rounded-md shadow-[3px_10px_29px_0px] grid grid-cols-[1fr_2fr_1fr] p-[20px] gap-[16px] justify-center items-center hover:scale-[1.02]  ">
+      <div className=" w-[310px] h-[110px] rounded-md shadow-2xl border-2 border-gray-100 grid grid-cols-[1fr_2fr_1fr] p-[20px] gap-[16px] justify-center items-center hover:scale-[1.02]  ">
          <div className=" h-[80px] w-[90px] bg-blue-700">
             <Image
                alt={name}

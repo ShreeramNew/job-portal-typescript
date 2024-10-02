@@ -37,10 +37,16 @@ export default function NavBar() {
             size="large"
             onSearch={onSearch}
          />
-         <div className="cursor-pointer bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center hover:scale-[1.02]" onClick={()=>router.push("/login")}>
+         <div
+            className="cursor-pointer bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center hover:scale-[1.02]"
+            onClick={() => router.push("/login")}
+         >
             Get Started <GoArrowUpRight color="white" />
          </div>
-         <div className="cursor-pointer bg-gray-700 p-[10px] rounded-md text-white flex items-center justify-center hover:scale-[1.02] " onClick={()=>router.push("/login/employer")}>
+         <div
+            className="cursor-pointer bg-gray-700 p-[10px] rounded-md text-white flex items-center justify-center hover:scale-[1.02] "
+            onClick={() => router.push("/login/employer")}
+         >
             Employer <GoArrowUpRight color="white" />
          </div>
       </div>
