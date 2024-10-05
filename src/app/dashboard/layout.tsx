@@ -9,8 +9,10 @@ export default function RootLayout({
 }>) {
    return (
       <>
-        <LeftNavbar/>
-         {children}
+         <div className=" flex">
+            <LeftNavbar />
+            {children}
+         </div>
       </>
    );
 }
