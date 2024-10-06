@@ -1,3 +1,4 @@
+import DashNavForMobile from "@/components/dashboard/DashNavForMobile";
 import LeftNavbar from "@/components/dashboard/LeftNavbar";
 import NavBar from "@/components/NavBar";
 import NavForMobile from "@/components/NavForMobile";
@@ -10,7 +11,8 @@ export default function RootLayout({
    return (
       <>
          <div className=" flex">
-            <LeftNavbar />
+            <LeftNavbar ForDrawer={false} />
+            <DashNavForMobile/>
             {children}
          </div>
       </>

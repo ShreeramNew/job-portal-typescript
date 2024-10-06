@@ -3,6 +3,9 @@ import { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
+import type { CollapseProps } from "antd";
+import { Collapse } from "antd";
+import { div } from "framer-motion/client";
 export default function Page() {
    const MyJobs = [
       {
@@ -49,9 +52,31 @@ export default function Page() {
       },
    ];
 
+   const items: CollapseProps["items"] = MyJobs.map(
+      ({ title, applicants, postedOn, expiresOn, jobId }) => {
+         return {
+            key: jobId,
+            label: title,
+            children: (
+               <EachRowForMobile
+                  key={jobId}
+                  id={jobId}
+                  title={title}
+                  applicants={applicants}
+                  postedOn={postedOn}
+                  expiresOn={expiresOn}
+               />
+            ),
+         };
+      }
+   );
+
+   const onChange = (key: string | string[]) => {
+      console.log(key);
+   };
    return (
-      <div className="h-screen  w-screen flex justify-center items-center">
-         <div className="border-2 border-gray-400 rounded-lg scale-[0.4] md:scale-[1.2] w-[90%] overflow-hidden">
+      <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex justify-center items-center">
+         <div className="hidden md:block border-2 border-gray-300 rounded-lg scale-[1.2] overflow-hidden shadow-2xl">
             <table className="">
                <thead>
                   <tr>
@@ -76,6 +101,17 @@ export default function Page() {
                </tbody>
             </table>
          </div>
+         <div className=" md:hidden">
+            <div className=" text-xl font-bold text-gray-700 p-[2%]">MyJobs</div>
+            <div className="border- border-green-900 w-full h-auto p-[2%]">
+               <Collapse
+                  expandIconPosition="end"
+                  items={items}
+                  defaultActiveKey={MyJobs[0].jobId}
+                  onChange={onChange}
+               />
+            </div>
+         </div>
       </div>
    );
 }
@@ -88,7 +124,6 @@ interface PropsType {
    expiresOn: string;
 }
 const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
-   const [active, setActive] = useState<number>(0);
    return (
       <tr>
          <td className=" border border-gray-400 border-b-0 text-center border-l-0  py-[1%] px-[10px] text-[0.9rem]">
@@ -105,32 +140,49 @@ const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
          </td>
          <td className=" border border-gray-400 border-b-0 text-center  py-[1%] px-[10px] text-[0.9rem] border-r-0">
             <div className=" flex justify-center items-center gap-[10px]">
-               <CiEdit
-                  onMouseOver={() => setActive(1)}
-                  onMouseLeave={() => setActive(0)}
-                  color={active === 1 ? "blue" : "#424242"}
-                  size={15}
-                  title="Edit"
-                  className=" cursor-pointer"
-               />
-               <FiEye
-                  onMouseOver={() => setActive(2)}
-                  onMouseLeave={() => setActive(0)}
-                  color={active === 2 ? "blue" : "#424242"}
-                  size={15}
-                  title="View"
-                  className=" cursor-pointer"
-               />
-               <MdDelete
-                  onMouseOver={() => setActive(3)}
-                  onMouseLeave={() => setActive(0)}
-                  color={active === 3 ? "blue" : "#424242"}
-                  size={15}
-                  title="Delete"
-                  className=" cursor-pointer"
-               />
+               <CiEdit size={15} title="Edit" className=" cursor-pointer hover:text-blue-600" />
+               <FiEye size={15} title="View" className=" cursor-pointer hover:text-blue-600" />
+               <MdDelete size={15} title="Delete" className=" cursor-pointer hover:text-blue-600" />
             </div>
          </td>
       </tr>
+   );
+};
+
+const EachRowForMobile = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
+   const StyleOfButton =
+      "flex gap-[2px] border-2 bg-blue-600 rounded-lg px-[3%] py-[1%] text-gray-300";
+
+   return (
+      <div className="">
+         <div className="">
+            <div>
+               <span className="text-gray-700 font-bold">Applicants:</span>
+               {applicants}
+            </div>
+            <div>
+               <span className="text-gray-700 font-bold">Posted On:</span>
+               {postedOn}
+            </div>
+            <div>
+               <span className="text-gray-700 font-bold">Expires on:</span>
+               {expiresOn}
+            </div>
+         </div>
+         <div className="flex justify-center items-center gap-[20px] mt-[2%]">
+            <div className={StyleOfButton}>
+               <CiEdit color="" size={23} title="Edit" />
+               Edit
+            </div>
+            <div className={StyleOfButton}>
+               <FiEye color="" size={23} title="View" />
+               View
+            </div>
+            <div className={StyleOfButton}>
+               <MdDelete color="" size={23} title="Delete" />
+               Delete
+            </div>
+         </div>
+      </div>
    );
 };

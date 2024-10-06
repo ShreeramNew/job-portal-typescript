@@ -8,7 +8,7 @@ import { FaWindowRestore } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-export default function LeftNavbar() {
+export default function LeftNavbar({ForDrawer}:{ForDrawer:boolean}) {
    let title = "Stark Industries";
    let headQuarters = "Banglore, India";
    let router = useRouter();
@@ -40,7 +40,7 @@ export default function LeftNavbar() {
       }
    };
    return (
-      <div className=" hidden md:block md:w-[32%] lg:w-[19%]  h-screen border-r-2 border-gray-400">
+      <div className={` ${ForDrawer?"block":"hidden"} md:block md:w-[32%] lg:w-[19%]  h-screen border-r-2 border-gray-400`}>
          <div className=" flex justify-center items-center p-[10px] gap-[6%]">
             <div className="border-2 border-gray-400 h-[80px] w-[80px] rounded-[100%] relative">
                <div className=" w-full h-full overflow-hidden rounded-[100%]">
