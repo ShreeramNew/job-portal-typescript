@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import type { CollapseProps } from "antd";
 import { Collapse } from "antd";
 import { div } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 export default function Page() {
    const MyJobs = [
       {
@@ -58,7 +59,7 @@ export default function Page() {
             key: jobId,
             label: title,
             children: (
-               <EachRowForMobile
+               <EachRow
                   key={jobId}
                   id={jobId}
                   title={title}
@@ -75,35 +76,10 @@ export default function Page() {
       console.log(key);
    };
    return (
-      <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex justify-center items-center">
-         <div className="hidden md:block border-2 border-gray-300 rounded-lg scale-[1.2] overflow-hidden shadow-2xl">
-            <table className="">
-               <thead>
-                  <tr>
-                     <th className=" border border-l-0 border-gray-400 border-t-0">Title</th>
-                     <th className=" border border-gray-400 border-t-0  ">Applicants</th>
-                     <th className=" border border-gray-400 border-t-0  ">Posted on</th>
-                     <th className=" border border-gray-400 border-t-0  ">Expires on</th>
-                     <th className=" border border-gray-400 border-t-0 border-r-0 ">Actions</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {MyJobs.map(({ jobId, title, applicants, postedOn, expiresOn }) => (
-                     <EachRow
-                        key={jobId}
-                        id={jobId}
-                        title={title}
-                        applicants={applicants}
-                        postedOn={postedOn}
-                        expiresOn={expiresOn}
-                     />
-                  ))}
-               </tbody>
-            </table>
-         </div>
-         <div className=" md:hidden">
-            <div className=" text-xl font-bold text-gray-700 p-[2%]">MyJobs</div>
-            <div className="border- border-green-900 w-full h-auto p-[2%]">
+      <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex">
+         <div className="md:w-[90%]">
+            <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">MyJobs</div>
+            <div className="border- border-green-900 w-full h-auto md:h-[100%] md:overflow-y-scroll p-[2%]">
                <Collapse
                   expandIconPosition="end"
                   items={items}
@@ -123,35 +99,12 @@ interface PropsType {
    postedOn: string;
    expiresOn: string;
 }
-const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
-   return (
-      <tr>
-         <td className=" border border-gray-400 border-b-0 text-center border-l-0  py-[1%] px-[10px] text-[0.9rem]">
-            {title}
-         </td>
-         <td className=" border border-gray-400 border-b-0 text-center  py-[1%] px-[10px] text-[0.9rem]">
-            {applicants}
-         </td>
-         <td className=" border border-gray-400 border-b-0 text-center  py-[1%] px-[10px] text-[0.9rem]">
-            {postedOn}
-         </td>
-         <td className=" border border-gray-400 border-b-0 text-center  py-[1%] px-[10px] text-[0.9rem]">
-            {expiresOn}
-         </td>
-         <td className=" border border-gray-400 border-b-0 text-center  py-[1%] px-[10px] text-[0.9rem] border-r-0">
-            <div className=" flex justify-center items-center gap-[10px]">
-               <CiEdit size={15} title="Edit" className=" cursor-pointer hover:text-blue-600" />
-               <FiEye size={15} title="View" className=" cursor-pointer hover:text-blue-600" />
-               <MdDelete size={15} title="Delete" className=" cursor-pointer hover:text-blue-600" />
-            </div>
-         </td>
-      </tr>
-   );
-};
 
-const EachRowForMobile = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
+
+const EachRow= ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
+   const router=useRouter();
    const StyleOfButton =
-      "flex gap-[2px] border-2 bg-blue-600 rounded-lg px-[3%] py-[1%] text-gray-300";
+      "flex gap-[2px] border-2 bg-blue-600 rounded-lg px-[3%] py-[1%] md:px-[1%] md:py-[0.2%] text-gray-300 cursor-pointer";
 
    return (
       <div className="">
@@ -169,12 +122,12 @@ const EachRowForMobile = ({ title, applicants, postedOn, expiresOn, id }: PropsT
                {expiresOn}
             </div>
          </div>
-         <div className="flex justify-center items-center gap-[20px] mt-[2%]">
-            <div className={StyleOfButton}>
+         <div className="flex justify-center md:justify-start items-center gap-[20px] mt-[2%]">
+            <div className={StyleOfButton} onClick={()=>router.push("/editJobDetail/"+id)}>
                <CiEdit color="" size={23} title="Edit" />
                Edit
             </div>
-            <div className={StyleOfButton}>
+            <div className={StyleOfButton} onClick={()=>router.push("/main/jobDetail/"+id)}>
                <FiEye color="" size={23} title="View" />
                View
             </div>

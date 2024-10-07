@@ -59,7 +59,7 @@ export default function TopCompanies() {
       },
    ];
    return (
-      <div className=" flex flex-col justify-center items-center bg-gray-50">
+      <div className=" flex flex-col justify-center items-center bg-gray-50 md:mt-[16%]">
          <h2 className=" m-[15px] mt-[13%] md:m-[0px] md:mt-[6%] text-[1.6rem] bg-transparent">Top Companies Hiring</h2>
          <div className=" flex overflow-x-scroll w-screen h-[25vh] md:h-[35vh] items-center px-[20px] gap-[20px] border- border-red-900">
             {companies.map((company) => {

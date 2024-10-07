@@ -12,9 +12,9 @@ export default function NavBar() {
    const onSearch: SearchProps["onSearch"] = (value, _e, info) => alert(value);
    const router = useRouter();
    return (
-      <div className="hidden w-full md:flex justify-center items-center gap-[30px] sticky top-0 z-50 bg-gray-300 p-[20px] text-gray-800 ">
+      <div className="hidden w-full md:flex justify-center items-center gap-[30px] sticky top-0 z-50 bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 p-[20px] text-gray-800 ">
          <div
-            className=" absolute left-[150px] z-[60] cursor-pointer"
+            className=" absolute lg:left-[10%] md:left-[0] scale-[0.8] lg:scale-[1]  z-[60] cursor-pointer"
             onClick={() => router.push("/main/home")}
          >
             <Image alt="logo" src={"/logo-no-background.svg"} width={150} height={150} />

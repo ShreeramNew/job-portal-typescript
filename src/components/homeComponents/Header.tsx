@@ -6,17 +6,17 @@ import { useRouter } from "next/navigation";
 export default function Header() {
    const router=useRouter();
    return (
-      <div className="w-full bg-gray-900 h-[500px] gap-[20px] p-[50px] justify-center items-center flex md:gap-[330px] lg:gap-[330px] md:p-[50px] lg:p-[50px] md:h-[550px] ">
-         <div className="md:flex md:flex-col md:gap-[40px] lg:flex lg:flex-col lg:gap-[40px] md:h-[400px] md:w-[800px] lg:h-[400px] lg:w-[600px] relative">
-            <h1 className=" md:ml-[100px] lg:ml-[100px] text-white text-[25px] md:text-[40px] absolute top-[-100px] right-[-10px] md:top-[100px] lg:top-[100px] md:right-[400px] lg:right-[400px] md:w-[500px] lg:w-[500px] ">
-               Where Ambitions Meet{" "}
+      <div className="w-full bg-gradient-to-br from-gray-900 via-gray-700 md:via-gray-800 to-gray-900 md:to-gray-900  h-[60vh] gap-[20px] p-[50px] flex justify-center items-center  md:p-[4%] lg:p-[3%] md:h-[50%] ">
+         <div className="md:flex md:flex-col md:h-[60vh] md:w-[50%] relative">
+            <h1 className=" border- border-red-900  text-white text-[1.7rem] md:text-[3rem] absolute top-[-15vh] right-[0] md:top-[20%] md:right-[60%] md:w-[85%]">
+               Where Ambitions Meet
                <span className=" text-blue-500">
                   <br />
                   Opportunities!
                </span>
             </h1>
 
-            <div className="cursor-pointer w-[160px] md:scale-[1.3] lg:scale-[1.3] bg-blue-500 p-[10px] rounded-md text-white flex items-center justify-center md:hover:scale-[1.32] absolute bottom-[-130px] right-[-10px] md:bottom-[50px] md:right-[500px] lg:bottom-[50px] lg:right-[500px]  hover:animate-pulse" onClick={()=>router.push("/login")}>
+            <div className="cursor-pointer w-[20vh] md:scale-[1.3] bg-blue-600 p-[1.6vh] rounded-md text-white flex items-center justify-center hover:scale-[1.32] absolute bottom-[-25vh] right-[-2vh] md:bottom-[15%] md:right-[80%]" onClick={()=>router.push("/login")}>
                Register Now <GoArrowUpRight color="white" />
             </div>
          </div>
@@ -26,7 +26,7 @@ export default function Header() {
             src="/header-poster.svg"
             width={400}
             height={400}
-            className="absolute right-[10px] md:right-[200px] md:h-[400px] lg:h-[400px] md:w-[400px] lg:w-[400px] h-[150px] w-[150px] "
+            className="absolute right-[1vh] md:right-[10%] md:h-[400px] md:w-[400px] h-[30vh] w-[30vh] "
          />
       </div>
    );

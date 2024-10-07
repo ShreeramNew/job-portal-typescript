@@ -24,7 +24,7 @@ export default function NavForMobile() {
    };
    return (
       <div className=" md:hidden lg:hidden w-full sticky top-0 z-50">
-         <div className=" bg-gray-300 p-[20px] flex justify-start gap-[30px] min-h-[70px] items-center justify-self-end relative">
+         <div className=" bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 p-[20px] flex justify-start gap-[30px] min-h-[70px] items-center justify-self-end relative">
             {!searchOpen && <FiMenu size={30} onClick={showDrawer} />}
             {!searchOpen && (
                <div
