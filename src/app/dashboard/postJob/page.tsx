@@ -26,9 +26,9 @@ const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
 
 export default function Page() {
    return (
-      <div className="w-screen h-screen border-2 pt-[16%] md:pt-0 border-red-900 flex flex-col justify-center items-center overflow-x-scroll">
+      <div className="w-screen h-screen border- pt-[16%] md:pt-0 border-red-900 flex flex-col justify-center items-center overflow-x-scroll">
          <h3 className="  left-0 text-gray-700 font-bold text-[1.2rem]">Job Details</h3>
-         <div className="w-[90%] md:w-[70%] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg  h-[90%] md:h-[85%] overflow-y-scroll overflow-x-hidden  p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem] ">
+         <div className="w-[90%] md:w-[70%] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg  h-[90%] md:h-[95%] overflow-y-scroll overflow-x-hidden  p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem] ">
             <Form
                name="basic"
                onFinish={onFinish}
