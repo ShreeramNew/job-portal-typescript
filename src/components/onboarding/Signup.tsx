@@ -1,20 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, message, Form, Input } from "antd";
 import type { FormProps } from "antd";
+import axios from "axios";
 
 export default function Signup({ isEmployer }: { isEmployer: boolean }) {
+   const [messageApi, contextHolder] = message.useMessage();
+   const [loading, setLoading] = useState<boolean>(false);
+
+   const success = (message: string) => {
+      messageApi.open({
+         type: "success",
+         content: message,
+      });
+   };
+
+   const errorMessage = (message: string) => {
+      messageApi.open({
+         type: "error",
+         content: message,
+      });
+   };
+
+   const warning = (message: string) => {
+      messageApi.open({
+         type: "warning",
+         content: message,
+      });
+   };
+
    const router = useRouter();
    type FieldType = {
       email?: string;
       password?: string;
       confirm?: string;
    };
-   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-      console.log("Success:", values);
+   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+      if (values.confirm === values.password) {
+         let payload = { email: values.email, password: values.password, isEmployer };
+         let API = process.env.NEXT_PUBLIC_API + "/api/signup";
+         setLoading(true);
+         try {
+            await axios.post(API, payload, { withCredentials: true });
+            success("SignUp Success!");
+            router.push(isEmployer ? "/dashboard/myjob" : "/main/home");
+         } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+               console.log(error);
+               errorMessage(error.response?.data.msg);
+            }
+         }
+         setLoading(false);
+      } else {
+         warning("Please confirm the password again");
+      }
    };
 
    const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
@@ -22,6 +63,7 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
    };
    return (
       <div className="w-full h-[100vh] border- border-red-800 flex justify-center items-center">
+         {contextHolder}
          <div className=" border-blue-900 border- w-[93%] md:w-[26%] h-[60%] rounded-lg shadow-blue-600 shadow-xl bg-gradient-to-br from-gray-400 via-gray-200 to-gray-300">
             <Form
                name="basic"
@@ -67,12 +109,13 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
                </Form.Item>
 
                <Form.Item className="w-[70%] m-0">
-                  <button
-                     type="submit"
-                     className=" bg-blue-500 py-[5px] text-xl rounded-md w-full text-white  "
+                  <Button
+                     htmlType="submit"
+                     loading={loading}
+                     className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
                   >
                      SignUp
-                  </button>
+                  </Button>
                </Form.Item>
                <p className="text-[1rem]">
                   Already have an account?
