@@ -13,7 +13,7 @@ type FieldType = {
    minSalary?: number;
    maxSalary?: number;
    responsibilities?: string;
-   skills?: string;
+   requiremnets?: string;
 };
 
 

@@ -9,7 +9,11 @@ type FieldType = {
    minSalary?: number;
    maxSalary?: number;
    responsibilities?: string;
+   requiremnets?:string;
    skills?: string;
+   minExp?:number;
+   maxExp?:number;
+   openings?:number;
 };
 
 const JobData = {
@@ -19,7 +23,11 @@ const JobData = {
    minSalary: 20000,
    maxSalary: 40000,
    responsibilities: "Responsibilities",
-   skills: "This is skills",
+   requiremnets:"This is a best requiremnet",
+   skills: "ReactJS, MongoDB,Git, ExpressJS,NodeJS",
+   minExp:1,
+   maxExp:2,
+   openings:3,
 };
 
 export default function Page() {

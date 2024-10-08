@@ -12,7 +12,11 @@ type FieldType = {
    minSalary?: number;
    maxSalary?: number;
    responsibilities?: string;
-   skills?: string;
+   requiremnets?: string;
+   skills?:string;
+   minExp?:number;
+   maxExp?:number;
+   openings?:number;
 };
 
 const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
@@ -51,7 +55,7 @@ export default function PostOrEditJob({
                      <Input />
                   </Form.Item>
                </div>
-              
+
                <div className="mt-[5%] md:mt-[1%] w-full h-auto flex gap-[10px] items-center border- border-green-900 ">
                   <div className="font-bold border- border-red-900 ">Location:</div>
                   <Form.Item<FieldType>
@@ -96,6 +100,40 @@ export default function PostOrEditJob({
                   <span>LPA</span>
                </div>
 
+               <div className="mt-[5%] md:mt-[1%] w-full h-auto flex gap-[10px] items-center border- border-green-900 ">
+                  <div className="font-bold border- border-red-900 ">Experience:</div>
+                  <Form.Item<FieldType>
+                     initialValue={isForEdit ? jobDetail?.minExp : ""}
+                     name="minExp"
+                     rules={[{ required: true, message: "" }]}
+                     className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
+                  >
+                     <Input type="number" />
+                  </Form.Item>
+                  <div>to</div>
+                  <Form.Item<FieldType>
+                     initialValue={isForEdit ? jobDetail?.maxExp : ""}
+                     name="maxExp"
+                     rules={[{ required: true, message: "" }]}
+                     className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
+                  >
+                     <Input type="number" />
+                  </Form.Item>
+                  <span>Year</span>
+               </div>
+
+               <div className="mt-[5%] md:mt-[1%] w-full h-auto flex gap-[10px] items-center border- border-green-900 ">
+                  <div className="font-bold border- border-red-900 ">Openings:</div>
+                  <Form.Item<FieldType>
+                     initialValue={isForEdit ? jobDetail?.openings : ""}
+                     name="openings"
+                     rules={[{ required: true, message: "" }]}
+                     className="border- border-blue-300 !h-full m-0"
+                  >
+                     <Input type="number" />
+                  </Form.Item>
+               </div>
+
                <div className="mt-[5%] md:mt-[1%] w-full h-auto border- border-green-900 ">
                   <div className="font-bold border- border-red-900 ">Key Responsibilities:</div>
                   <Form.Item<FieldType>
@@ -109,9 +147,19 @@ export default function PostOrEditJob({
                   <div>Note: Each sentence will be shown as a bullet point</div>
                </div>
                <div className="mt-[5%] md:mt-[1%] w-full h-auto border- border-green-900 ">
-                  <div className="font-bold border- border-red-900 ">
-                     Required Skills and Qualifications:
-                  </div>
+                  <div className="font-bold border- border-red-900 ">Requiremnets:</div>
+                  <Form.Item<FieldType>
+                     initialValue={isForEdit ? jobDetail?.requiremnets : ""}
+                     name="requiremnets"
+                     rules={[{ required: true, message: "" }]}
+                     className="border- border-blue-300 w-[90%] md:w-[40%] !h-full m-0"
+                  >
+                     <TextArea rows={5} />
+                  </Form.Item>
+                  <div>Note: Each sentence will be shown as a bullet point</div>
+               </div>
+               <div className="mt-[5%] md:mt-[1%] w-full h-auto border- border-green-900 ">
+                  <div className="font-bold border- border-red-900 ">Skills:</div>
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.skills : ""}
                      name="skills"
@@ -120,7 +168,7 @@ export default function PostOrEditJob({
                   >
                      <TextArea rows={5} />
                   </Form.Item>
-                  <div>Note: Each sentence will be shown as a bullet point</div>
+                  <div>Add the required skills, seperated by commas</div>
                </div>
 
                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
