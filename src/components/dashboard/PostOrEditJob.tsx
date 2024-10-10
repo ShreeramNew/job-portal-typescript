@@ -1,9 +1,11 @@
 "use client";
 import { BsCaretRightFill } from "react-icons/bs";
-import React from "react";
+import React, { useState } from "react";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, message, Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
    jobTitle?: string;
@@ -13,18 +15,10 @@ type FieldType = {
    maxSalary?: number;
    responsibilities?: string;
    requiremnets?: string;
-   skills?:string;
-   minExp?:number;
-   maxExp?:number;
-   openings?:number;
-};
-
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-   console.log("Success:", values);
-};
-
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-   console.log("Failed:", errorInfo);
+   skills?: string;
+   minExp?: number;
+   maxExp?: number;
+   openings?: number;
 };
 
 export default function PostOrEditJob({
@@ -34,8 +28,53 @@ export default function PostOrEditJob({
    isForEdit: boolean;
    jobDetail?: FieldType;
 }) {
+   const [messageApi, contextHolder] = message.useMessage();
+   const [loading, setLoading] = useState<boolean>(false);
+   const router=useRouter()
+
+   const success = (message: string) => {
+      messageApi.open({
+         type: "success",
+         content: message,
+      });
+   };
+
+   const errorMessage = (message: string) => {
+      messageApi.open({
+         type: "error",
+         content: message,
+      });
+   };
+
+   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+      let API: string = "";
+      if (isForEdit) {
+      } else {
+         API = "http://localhost:3000/api/postJob";
+      }
+      try {
+         setLoading(true);
+         let response = await axios.post(API, values, { withCredentials: true });
+         success(response.data.msg);
+         router.push("/dashboard/myjob");
+      } catch (error: unknown) {
+         if (axios.isAxiosError(error)) {
+            errorMessage(error.response?.data.msg);
+         }
+         console.log(error);
+      }
+      setLoading(false);
+
+      console.log("Success:", values);
+   };
+
+   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+      console.log("Failed:", errorInfo);
+   };
+
    return (
       <div className="w-screen h-screen border- pt-[16%] md:pt-0 border-red-900 flex flex-col justify-center items-center overflow-x-scroll">
+         {contextHolder}
          <h3 className="  left-0 text-gray-700 font-bold text-[1.2rem]">Job Details</h3>
          <div className="w-[90%] md:w-[70%] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg  h-[90%] md:h-[95%] overflow-y-scroll overflow-x-hidden  p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem] ">
             <Form
@@ -43,6 +82,7 @@ export default function PostOrEditJob({
                onFinish={onFinish}
                onFinishFailed={onFinishFailed}
                className="h-full"
+               clearOnDestroy={true}
             >
                <div className="mt-[5%] md:mt-[1%] w-full h-auto flex gap-[10px] items-center border- border-green-900 ">
                   <div className="font-bold border- border-red-900 ">Job Title:</div>
@@ -83,19 +123,19 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.minSalary : ""}
                      name="minSalary"
-                     rules={[{ required: true, message: "" }]}
+                     rules={[{ required: true, message: "", min: 0 }]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
-                     <Input type="number" />
+                     <Input type="number" min={0} />
                   </Form.Item>
                   <div>to</div>
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.maxSalary : ""}
                      name="maxSalary"
-                     rules={[{ required: true, message: "" }]}
+                     rules={[{ required: true, message: "", min: 0 }]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
-                     <Input type="number" />
+                     <Input type="number" min={0} />
                   </Form.Item>
                   <span>LPA</span>
                </div>
@@ -105,19 +145,19 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.minExp : ""}
                      name="minExp"
-                     rules={[{ required: true, message: "" }]}
+                     rules={[{ required: true, message: "", min: 0 }]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
-                     <Input type="number" />
+                     <Input type="number" min={0} />
                   </Form.Item>
                   <div>to</div>
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.maxExp : ""}
                      name="maxExp"
-                     rules={[{ required: true, message: "" }]}
+                     rules={[{ required: true, message: "", min: 0 }]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
-                     <Input type="number" />
+                     <Input type="number" min={0} />
                   </Form.Item>
                   <span>Year</span>
                </div>
@@ -127,10 +167,10 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.openings : ""}
                      name="openings"
-                     rules={[{ required: true, message: "" }]}
+                     rules={[{ required: true, message: "", min: 0 }]}
                      className="border- border-blue-300 !h-full m-0"
                   >
-                     <Input type="number" />
+                     <Input type="number" min={0} />
                   </Form.Item>
                </div>
 
@@ -171,8 +211,12 @@ export default function PostOrEditJob({
                   <div>Add the required skills, seperated by commas</div>
                </div>
 
-               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                  <Button type="primary" htmlType="submit">
+               <Form.Item className=" w-[30%]">
+                  <Button
+                     htmlType="submit"
+                     loading={loading}
+                     className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
+                  >
                      Post
                   </Button>
                </Form.Item>

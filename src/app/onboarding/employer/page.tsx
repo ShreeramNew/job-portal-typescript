@@ -2,14 +2,15 @@
 import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, message, Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
    companyName?: string;
    bio?: string;
-   remember?: string;
    location?: string;
    phone?: string;
    website?: string;
@@ -20,8 +21,38 @@ type FieldType = {
 };
 
 export default function Page() {
+   const [messageApi, contextHolder] = message.useMessage();
+   const [loading, setLoading] = useState<boolean>(false);
+
+   const success = (message: string) => {
+      messageApi.open({
+         type: "success",
+         content: message,
+      });
+   };
+
+   const errorMessage = (message: string) => {
+      messageApi.open({
+         type: "error",
+         content: message,
+      });
+   };
+   const router = useRouter();
    const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+      const API = "http://localhost:3000/api/onboarding/employer";
+      try {
+         setLoading(true);
+         await axios.post(API, values, { withCredentials: true });
+         router.push("/dashboard/myjob");
+         setLoading(false);
+      } catch (error: unknown) {
+         if (axios.isAxiosError(error)) {
+            console.log(error);
+            errorMessage(error.response?.data.msg);
+            setLoading(false);
+         }
+      }
       console.log("Success:", values);
    };
 
@@ -36,6 +67,7 @@ export default function Page() {
 
    return (
       <div className=" w-screen h-screen border-2 border-red-900 flex justify-center items-center ">
+         {contextHolder}
          <div className=" w-[90%] md:w-[50%] h-[90%] overflow-y-scroll border- border-blue-900 flex flex-col justify-center items-center p-[10px] rounded-md shadow-blue-600 shadow-xl bg-gradient-to-br from-gray-400 via-gray-200 to-gray-300">
             <div className=" border- border-red-900 w-full h-auto pt-[140%] md:pt-[60%] relative">
                <Form
@@ -58,7 +90,7 @@ export default function Page() {
 
                   <div className=" w-[85%] md:w-[60%] h-[16vh]">
                      <label>About:</label>
-                     <Form.Item<FieldType> name="bio" rules={[{ required: false }]}>
+                     <Form.Item<FieldType> name="bio" rules={[{ required: true, message: "" }]}>
                         <TextArea
                            placeholder="Write about your company"
                            className="!resize-none"
@@ -69,7 +101,10 @@ export default function Page() {
 
                   <div className=" w-[85%] md:w-[60%] h-[16vh]">
                      <label>Why Candidates Should Join Your Company?:</label>
-                     <Form.Item<FieldType> name="whyWorkWithUS" rules={[{ required: false }]}>
+                     <Form.Item<FieldType>
+                        name="whyWorkWithUS"
+                        rules={[{ required: true, message: "" }]}
+                     >
                         <TextArea
                            placeholder="Write about why Candidates Should Join Your Company"
                            className="!resize-none"
@@ -80,7 +115,10 @@ export default function Page() {
 
                   <div className=" w-[85%] md:w-[60%] h-[16vh]">
                      <label>About your Team:</label>
-                     <Form.Item<FieldType> name="aboutTeam" rules={[{ required: false }]}>
+                     <Form.Item<FieldType>
+                        name="aboutTeam"
+                        rules={[{ required: true, message: "" }]}
+                     >
                         <TextArea
                            placeholder="Write about your Team"
                            className="!resize-none"
@@ -91,7 +129,10 @@ export default function Page() {
 
                   <div className=" w-[85%] md:w-[60%] h-[16vh]">
                      <label>About your Work Envoirnment:</label>
-                     <Form.Item<FieldType> name="aboutEnvoirnment" rules={[{ required: false }]}>
+                     <Form.Item<FieldType>
+                        name="aboutEnvoirnment"
+                        rules={[{ required: true, message: "" }]}
+                     >
                         <TextArea
                            placeholder="Write about your Work envoirnment"
                            className="!resize-none"
@@ -104,7 +145,7 @@ export default function Page() {
                      <label>Location:</label>
                      <Form.Item<FieldType>
                         name="location"
-                        rules={[{ required: true, message: "Please input your location!" }]}
+                        rules={[{ required: true, message: "" }]}
                      >
                         <Input placeholder="Enter your Company Location" className=" h-[5vh]" />
                      </Form.Item>
@@ -112,17 +153,14 @@ export default function Page() {
 
                   <div className=" w-[85%] md:w-[60%] h-[12vh] ">
                      <label>Phone Number(Optional):</label>
-                     <Form.Item<FieldType> name="phone" rules={[{ required: false }]}>
+                     <Form.Item<FieldType> name="phone" rules={[{ required: true, message: "" }]}>
                         <Input type="number" placeholder="Phone number" className=" h-[5vh]" />
                      </Form.Item>
                   </div>
 
                   <div className=" w-[85%] md:w-[60%] h-[12vh] ">
                      <label>Website:</label>
-                     <Form.Item<FieldType>
-                        name="website"
-                        rules={[{ required: true, message: "Please give your website URL" }]}
-                     >
+                     <Form.Item<FieldType> name="website" rules={[{ required: true, message: "" }]}>
                         <Input type="url" placeholder="Website URL" className=" h-[5vh]" />
                      </Form.Item>
                   </div>
@@ -131,23 +169,20 @@ export default function Page() {
                      <label>LinkedIn:</label>
                      <Form.Item<FieldType>
                         name="linkedin"
-                        rules={[{ required: true, message: "Please give your LinkedIn URL" }]}
+                        rules={[{ required: true, message: "" }]}
                      >
                         <Input type="url" placeholder="LinkedIn URL" className=" h-[5vh]" />
                      </Form.Item>
                   </div>
 
                   <Form.Item className=" md: bottom-[-5%] md:bottom-[-3%] right-6">
-                     <button
-                        className={`${
-                           buttonDisabled
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-blue-600  cursor-pointer"
-                        } px-[40%] py-[3px] rounded-lg text-white scale-[1.2] md:scale-[1]`}
-                        type="submit"
+                     <Button
+                        htmlType="submit"
+                        loading={loading}
+                        className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
                      >
-                        Submit
-                     </button>
+                        Save
+                     </Button>
                   </Form.Item>
                </Form>
             </div>

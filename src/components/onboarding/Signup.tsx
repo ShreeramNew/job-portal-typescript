@@ -45,7 +45,7 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
          try {
             await axios.post(API, payload, { withCredentials: true });
             success("SignUp Success!");
-            router.push(isEmployer ? "/dashboard/myjob" : "/main/home");
+            router.push(isEmployer ? "/onboarding/employer" : "/main/home");
          } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                console.log(error);

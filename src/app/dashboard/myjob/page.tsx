@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
@@ -7,54 +7,34 @@ import type { CollapseProps } from "antd";
 import { Collapse } from "antd";
 import { div } from "framer-motion/client";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 export default function Page() {
-   const MyJobs = [
-      {
-         jobId: "sbdn53yebdj",
-         title: "Full Stack Developer",
-         applicants: 22,
-         postedOn: "24th Sep, 2024",
-         expiresOn: "14th Nov, 2024",
-      },
-      {
-         jobId: "abc123xyz456",
-         title: "Frontend Developer",
-         applicants: 30,
-         postedOn: "25th Sep, 2024",
-         expiresOn: "15th Nov, 2024",
-      },
-      {
-         jobId: "def456ghi789",
-         title: "Backend Developer",
-         applicants: 18,
-         postedOn: "26th Sep, 2024",
-         expiresOn: "16th Nov, 2024",
-      },
-      {
-         jobId: "jkl987mno321",
-         title: "UI/UX Designer",
-         applicants: 10,
-         postedOn: "27th Sep, 2024",
-         expiresOn: "17th Nov, 2024",
-      },
-      {
-         jobId: "pqr543stu876",
-         title: "Data Scientist",
-         applicants: 40,
-         postedOn: "28th Sep, 2024",
-         expiresOn: "18th Nov, 2024",
-      },
-      {
-         jobId: "vwx901yz234",
-         title: "DevOps Engineer",
-         applicants: 15,
-         postedOn: "29th Sep, 2024",
-         expiresOn: "19th Nov, 2024",
-      },
-   ];
+   type JobType = {
+      jobId?: string;
+      title?: string;
+      applicants?: number;
+      postedOn?: string;
+      expiresOn?: string;
+   };
+   const [myJobs, setMyJobs] = useState<JobType[]>([]);
 
-   const items: CollapseProps["items"] = MyJobs.map(
-      ({ title, applicants, postedOn, expiresOn, jobId }) => {
+   let API = "http://localhost:3000/api/getJobs/employer";
+
+   const fetchJobs = async () => {
+      try {
+         let response = await axios.get(API, { withCredentials: true });
+         setMyJobs(response.data.jobs);
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   useEffect(() => {
+      fetchJobs();
+   }, []);
+
+   const items: CollapseProps["items"] = myJobs.map(
+      ({ title, applicants, postedOn, expiresOn, jobId }: JobType) => {
          return {
             key: jobId,
             label: title,
@@ -78,12 +58,14 @@ export default function Page() {
    return (
       <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex">
          <div className="md:w-[90%]">
-            <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">MyJobs</div>
+            <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">
+               MyJobs
+            </div>
             <div className="border- border-green-900 w-full h-auto md:h-[100%] md:overflow-y-scroll p-[2%]">
                <Collapse
                   expandIconPosition="end"
                   items={items}
-                  defaultActiveKey={MyJobs[0].jobId}
+                  defaultActiveKey={myJobs[0]?.jobId ?? []}
                   onChange={onChange}
                />
             </div>
@@ -93,16 +75,15 @@ export default function Page() {
 }
 
 interface PropsType {
-   id: string;
-   title: string;
-   applicants: number;
-   postedOn: string;
-   expiresOn: string;
+   id?: string;
+   title?: string;
+   applicants?: number;
+   postedOn?: string;
+   expiresOn?: string;
 }
 
-
-const EachRow= ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
-   const router=useRouter();
+const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
+   const router = useRouter();
    const StyleOfButton =
       "flex gap-[2px] border-2 bg-blue-600 rounded-lg px-[3%] py-[1%] md:px-[1%] md:py-[0.2%] text-gray-300 cursor-pointer";
 
@@ -123,11 +104,11 @@ const EachRow= ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
             </div>
          </div>
          <div className="flex justify-center md:justify-start items-center gap-[20px] mt-[2%]">
-            <div className={StyleOfButton} onClick={()=>router.push("/editJobDetail/"+id)}>
+            <div className={StyleOfButton} onClick={() => router.push("/editJobDetail/" + id)}>
                <CiEdit color="" size={23} title="Edit" />
                Edit
             </div>
-            <div className={StyleOfButton} onClick={()=>router.push("/main/jobDetail/"+id)}>
+            <div className={StyleOfButton} onClick={() => router.push("/main/jobDetail/" + id)}>
                <FiEye color="" size={23} title="View" />
                View
             </div>

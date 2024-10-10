@@ -1,13 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, Checkbox,message, Form, Input } from "antd";
+import { Button, Checkbox, message, Form, Input } from "antd";
 import type { FormProps } from "antd";
 import { useState } from "react";
 import axios from "axios";
 
 export default function Login({ isEmployer }: { isEmployer: boolean }) {
-
    const [messageApi, contextHolder] = message.useMessage();
    const [loading, setLoading] = useState<boolean>(false);
 
@@ -32,33 +31,35 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
       });
    };
 
-
    const router = useRouter();
    type FieldType = {
       email?: string;
       password?: string;
    };
 
-
-
-
    const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-     
-         let payload = { email: values.email, password: values.password, isEmployer };
-         let API = process.env.NEXT_PUBLIC_API + "/api/login";
-         setLoading(true);
-         try {
-            await axios.post(API, payload, { withCredentials: true });
-            success("SignUp Success!");
-            router.push(isEmployer ? "/dashboard/myjob" : "/main/home");
-         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-               console.log(error);
-               errorMessage(error.response?.data.msg);
-            }
+      let payload = { email: values.email, password: values.password, isEmployer };
+      // let API = process.env.NEXT_PUBLIC_API + "/api/login";
+      let API = " http://localhost:3000" + "/api/login";
+
+      setLoading(true);
+      try {
+         let response=await axios.post(API, payload, { withCredentials: true });
+         success("Login Success!");
+         let isOnboardingRequired=response.data.isOnboardingRequired;
+         if(isEmployer){
+            router.push( isOnboardingRequired?"/onboarding/employer" : "/dashboard/myjob");
+         }else{
+            router.push( isOnboardingRequired?"/onboarding" : "/dashboard/myjob");
          }
          setLoading(false);
-      
+      } catch (error: unknown) {
+         if (axios.isAxiosError(error)) {
+            console.log(error);
+            errorMessage(error.response?.data.msg);
+         }
+         setLoading(false)
+      }
    };
 
    const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
@@ -102,7 +103,7 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
                </Form.Item>
 
                <Form.Item className="w-[70%] m-0">
-               <Button
+                  <Button
                      htmlType="submit"
                      loading={loading}
                      className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
