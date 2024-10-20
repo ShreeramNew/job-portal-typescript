@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PiSuitcaseSimpleLight } from "react-icons/pi";
 import { GiMoneyStack } from "react-icons/gi";
 import { MdOutlineLocationOn, MdLocalPhone } from "react-icons/md";
@@ -12,40 +12,132 @@ import { TbWorld } from "react-icons/tb";
 import { motion, AnimatePresence } from "framer-motion";
 import { TiSocialLinkedin } from "react-icons/ti";
 import JobPostCard from "@/components/cards/JobPostCard";
+import { useParams } from "next/navigation";
+import axios from "axios";
+
+interface JobDataType {
+   id?: string;
+   role?: string;
+   company?: string;
+   minYear?: number;
+   maxYear?: number;
+   minSalary?: number;
+   maxSalary?: number;
+   location?: string;
+   skills?: string[];
+   time?: string;
+   Responsibilities?: string[];
+   Requiremnets?: string[];
+   openings?: number;
+   jobType?: string;
+}
+
+interface CompanyData {
+   _id?: string;
+   employerId?: string;
+   companyName?: string;
+   bio?: string;
+   location?: string;
+   phone?: number;
+   website?: string;
+   linkedin?: string;
+   whyWorkWithUS?: string;
+   aboutTeam?: string;
+   aboutEnvoirnment?: string;
+   __v?: number;
+   email?: string;
+}
 
 export default function Page() {
+   const { slug } = useParams();
    const [isDescriptionOpen, SetIsDescriptionOpen] = useState<boolean>(true);
+   const [loading, setLoading] = useState<boolean>(false);
+   const [companyData, setCompanyData] = useState<CompanyData>({});
+
+   //----------------Fetch Company Details---------------
+   const fetchCompanyDetails = async (empId: string) => {
+      if (empId) {
+         let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/employer?empId=" + empId;
+         try {
+            setLoading(true);
+            let response = await axios.get(API);
+            setCompanyData(response.data.profile);
+         } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+               // errorMessage(error.response?.data.msg);
+            }
+         }
+         setLoading(false);
+      } else {
+         alert("Unauthorized access!");
+      }
+   };
 
    //----------------------Perticular Job-------------------------
-   const JobData = {
-      id: "12",
-      role: "Frontend Developer",
-      company: "SerumTech Pvt Ltd",
-      minYear: 0,
-      maxYear: 4,
-      minSalary: 5,
-      maxSalary: 6,
-      location: "Bangalore, Karnataka",
-      skills: ["React.js", "Node.js", "Next.js", "Git", "Express.js", "MongoDB"],
-      time: 3,
+   const [JobData, setJobData] = useState<JobDataType>({});
+   //----------------------------Fetch Job Details------------------------------
+   const FetchJobDetails = async () => {
+      let API = process.env.NEXT_PUBLIC_API + "/api/getJobDetails?jobId=" + slug;
+      try {
+         let response = await axios(API);
+         let responseDetails = response.data.jobDetails;
+         console.log(response);
+         console.log();
+
+         //Format some data
+         let requirements = responseDetails.requirements
+            .replace(/\n/g, "")
+            .split(".")
+            .map((req: String) => req.trim()); // Remove \n and split by periods
+         let responsibilities = responseDetails.responsibilities
+            .replace(/\n/g, "")
+            .split(".")
+            .map((req: String) => req.trim()); // Remove \n and split by periods
+         let Skills = responseDetails.skills.split(",");
+
+         let DataToSet = {
+            id: responseDetails._id,
+            role: responseDetails.jobTitle,
+            company: responseDetails.company,
+            minYear: responseDetails.minExp,
+            maxYear: responseDetails.maxExp,
+            minSalary: responseDetails.minSalary,
+            maxSalary: responseDetails.maxSalary,
+            location: responseDetails.location,
+            skills: Skills,
+            time: "",
+            Responsibilities: responsibilities,
+            Requiremnets: requirements,
+            openings: responseDetails.openings,
+            jobType: responseDetails.jobType,
+         };
+         setJobData(DataToSet);
+         fetchCompanyDetails(responseDetails.employerId);
+
+         let cDate = new Date("2024-10-10T02:25:52.000Z");
+         let currentDate = new Date();
+
+         let timeDifference = currentDate.getTime() - cDate.getTime(); // Difference in milliseconds
+
+         // Converting time difference into days, hours, minutes, and seconds
+         let days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+         let hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+         let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+         let seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+         console.log(
+            `Time passed: ${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`
+         );
+      } catch (error: unknown) {
+         if (axios.isAxiosError(error)) {
+            console.log(error.response?.data.msg);
+         }
+      }
    };
-   const Responsibilities: string[] = [
-      "Develop front-end and back-end solutions using the latest web technologies.",
-      "Collaborate with product management and design teams to define and implement new features.",
-      "Build reusable code and libraries for future use. Optimize applications for maximum speed and scalability.",
-      "Implement security and data protection measures.",
-      "Conduct unit testing and troubleshooting. Stay updated on emerging technologies and industry trends.",
-   ];
-   const Requiremnets: string[] = [
-      "Proven experience as a Full Stack Developer or similar role",
-      "Proficiency in front-end development languages such as HTML, CSS, JavaScript, and frameworks like React.js.",
-      "Solid understanding of back-end development languages such as Node.js, Python, Ruby, or PHP.",
-      "Experience with database technologies (e.g., MySQL, MongoDB).",
-      "Knowledge of RESTful API design and development.",
-      "Familiarity with version control systems (e.g., Git).",
-      "Excellent communication and collaboration skills.",
-      "Bachelor's degree in Computer Science, Engineering, or a related field (preferred).",
-   ];
+
+   useEffect(() => {
+      FetchJobDetails();
+   });
 
    //-----------------------Similar Jobs---------------------------
    const SimilarJobs = [
@@ -165,6 +257,7 @@ export default function Page() {
                   location={JobData.location}
                   skills={JobData.skills}
                   time={JobData.time}
+                  openings={JobData.openings}
                />
             </div>
             <div className="bg-gray-100 shadow-lg w-full h-auto min-h-[70vh] rounded-lg border-2 border-gray-200 mt-[10px] relative">
@@ -197,38 +290,44 @@ export default function Page() {
                      >
                         <div className=" w-full flex gap-[10px] items-center">
                            <div className="font-bold">Job Title:</div>
-                           <div>Full Stack Developer</div>
+                           <div>{JobData.role}</div>
                         </div>
                         <div className=" w-full flex gap-[10px] items-center">
                            <div className="font-bold">Company:</div>
-                           <div>[Your Company Name]</div>
+                           <div>{JobData.company}</div>
                         </div>
                         <div className=" w-full flex gap-[10px] items-center">
                            <div className="font-bold"> Location:</div>
-                           <div> [City, State/Province] </div>
+                           <div> {JobData.location}</div>
                         </div>
                         <div className=" w-full flex gap-[10px] items-center">
                            <div className="font-bold">Job Type:</div>
-                           <div>Full-time</div>
+                           <div>{JobData.jobType}</div>
                         </div>
                         <div className=" w-full flex gap-[10px] items-center">
                            <div className="font-bold">Salary:</div>
-                           <div>Competitive</div>
+                           <div>
+                              {JobData.minSalary}LPA to {JobData.maxSalary}LPA
+                           </div>
                         </div>
                         <div className=" w-full gap-[10px] items-center">
                            <div className="font-bold">Key Responsibilities:</div>
                            <div>
-                              {Responsibilities.map((point: string) => (
-                                 <BulletPoints point={point} />
-                              ))}
+                              {JobData.Responsibilities?.map((point: string) => {
+                                 if (point !== "") {
+                                    return <BulletPoints point={point} />;
+                                 }
+                              })}
                            </div>
                         </div>
                         <div className=" w-full gap-[10px] items-center">
                            <div className="font-bold">Required Skills and Qualifications:</div>
                            <div>
-                              {Requiremnets.map((point: string) => (
-                                 <BulletPoints point={point} />
-                              ))}
+                              {JobData.Requiremnets?.map((point: string) => {
+                                 if (point !== "") {
+                                    return <BulletPoints point={point} />;
+                                 }
+                              })}
                            </div>
                         </div>
                      </motion.div>
@@ -242,56 +341,22 @@ export default function Page() {
                         className="mt-[14%] md:mt-[5%] p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem]"
                      >
                         <div className={SubHeadingStyle}>About Us</div>
-                        <div>
-                           At [Company Name], we are a leading force in the [industry or
-                           specialization] sector. Since our establishment in [year], we have been
-                           dedicated to delivering innovative solutions that help our clients thrive
-                           in an ever-changing market. With a commitment to excellence and a passion
-                           for growth, we have built a reputation for quality and reliability.
-                        </div>
+                        <div>{companyData.bio}</div>
                         <div className={SubHeadingStyle}>Why Work With Us?</div>
-                        <div>
-                           We believe in fostering an inclusive and collaborative work environment
-                           where creativity and innovation thrive. At [Company Name], you are not
-                           just an employee—you are a valued member of a dynamic team that
-                           prioritizes professional growth, work-life balance, and personal
-                           fulfillment. We offer competitive benefits, career development
-                           opportunities, and the chance to work on exciting projects that make an
-                           impact.
-                        </div>
+                        <div>{companyData.whyWorkWithUS}</div>
                         <div className={SubHeadingStyle}>Our Team</div>
-                        <div>
-                           Our team is made up of talented professionals from diverse backgrounds
-                           who share a common goal: to drive success and make a difference. From our
-                           leadership team to every department, we believe in empowering our
-                           employees to take ownership of their roles, contribute ideas, and grow
-                           both personally and professionally. Teamwork, respect, and open
-                           communication are at the core of everything we do.
-                        </div>
+                        <div>{companyData.aboutTeam}</div>
                         <div className={SubHeadingStyle}>Work Environment</div>
-                        <div>
-                           At [Company Name], we have created a workplace culture that promotes
-                           collaboration, creativity, and personal development. Whether you prefer
-                           remote work, a hybrid setup, or working on-site, we offer flexible
-                           options to suit your needs. Our employees enjoy a positive work
-                           environment `with access to cutting-edge tools and resources, as well as
-                           opportunities for continued learning and growth.
-                        </div>
+                        <div>{companyData.aboutEnvoirnment}</div>
                         <div className={SubHeadingStyle}>Location</div>
-                        <div>
-                           Our headquarters is located in [City, State], with additional offices in
-                           [Location 1], [Location 2], and [Location 3]. We are proud to have a
-                           global presence that enables us to work with clients and partners across
-                           multiple regions. Depending on the role, remote work options may also be
-                           available.
-                        </div>
+                        <div>{companyData.location}</div>
                         <div className={SubHeadingStyle}>Contact Us</div>
                         <div>
                            <ContactCard
-                              email="shreerambca1@gmail.com"
-                              phone="7259306815"
-                              website="https://www.google.com/"
-                              social="https://github.com/ShreeramNew"
+                              email={companyData.email}
+                              phone={companyData.phone}
+                              website={companyData.website}
+                              social={companyData.linkedin}
                            />
                         </div>
                      </motion.div>
@@ -335,10 +400,10 @@ const BulletPoints = ({ point }: { point: string }) => {
 };
 
 interface ConatctPropstype {
-   email: string;
-   phone: string;
-   social: string;
-   website: string;
+   email?: string;
+   phone?: number;
+   social?: string;
+   website?: string;
 }
 const ContactCard = ({ email, phone, social, website }: ConatctPropstype) => {
    return (
@@ -370,16 +435,17 @@ const ContactCard = ({ email, phone, social, website }: ConatctPropstype) => {
 };
 
 interface PropsType {
-   id: string;
-   role: string;
-   company: string;
-   minYear: number;
-   maxYear: number;
-   minSalary: number;
-   maxSalary: number;
-   location: string;
-   skills: string[];
-   time: number;
+   id?: string;
+   role?: string;
+   company?: string;
+   minYear?: number;
+   maxYear?: number;
+   minSalary?: number;
+   maxSalary?: number;
+   location?: string;
+   skills?: string[];
+   time?: string;
+   openings?: number;
 }
 
 const JobHighlight = ({
@@ -393,6 +459,7 @@ const JobHighlight = ({
    location,
    skills,
    time,
+   openings,
 }: PropsType) => {
    return (
       <div className=" w-full h-full rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
@@ -424,7 +491,7 @@ const JobHighlight = ({
             </div>
          </div>
          <div className=" w-full h-[30%] md:h-[30px] absolute bottom-[20%] md:bottom-[20%] lg:bottom-[20%] overflow-hidden grid grid-cols-[1fr_1fr_1fr_1fr] md:flex gap-[10px] gap-y-[0px] md:gap-[14px] items-center pl-[10px] border- border-red-900">
-            {skills.map((skill) => {
+            {skills?.map((skill) => {
                return <SkillCard title={skill} />;
             })}
          </div>
@@ -432,7 +499,7 @@ const JobHighlight = ({
             <div className="flex justify-center items-center gap-[10px] md:gap-[20px] w-[30%] border- border-green-900 text-gray-700">
                <div className=" flex justify-center items-center gap-[2px]">
                   <FaUserTie />
-                  <div>Openings:{200}</div>
+                  <div>Openings:{openings}</div>
                </div>
                <div className="flex justify-center items-center gap-[2px]">
                   <HiOutlineDocumentText />

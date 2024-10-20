@@ -1,8 +1,8 @@
 "use client";
 import { BsCaretRightFill } from "react-icons/bs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { FormProps } from "antd";
-import { Button, Checkbox, message, Form, Input } from "antd";
+import { Button, Checkbox, message, Form, Input, Spin } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -14,23 +14,36 @@ type FieldType = {
    minSalary?: number;
    maxSalary?: number;
    responsibilities?: string;
-   requiremnets?: string;
+   requirements?: string;
    skills?: string;
    minExp?: number;
    maxExp?: number;
    openings?: number;
 };
 
+type responseType = {
+   _id?: string;
+   employerId?: string;
+   __v?: number;
+} & FieldType;
+
 export default function PostOrEditJob({
    isForEdit,
-   jobDetail,
+   jobId,
 }: {
    isForEdit: boolean;
-   jobDetail?: FieldType;
+   jobId?: string;
 }) {
    const [messageApi, contextHolder] = message.useMessage();
-   const [loading, setLoading] = useState<boolean>(false);
-   const router=useRouter()
+   const [loading, setLoading] = useState<{
+      buttonLoading: boolean;
+      contentLoading: boolean;
+   }>({
+      buttonLoading: false,
+      contentLoading: true,
+   });
+   const [jobDetail, setJobDetail] = useState<responseType>({});
+   const router = useRouter();
 
    const success = (message: string) => {
       messageApi.open({
@@ -46,16 +59,57 @@ export default function PostOrEditJob({
       });
    };
 
-   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-      let API: string = "";
-      if (isForEdit) {
-      } else {
-         API = "http://localhost:3000/api/postJob";
-      }
+   //----------------------------------To fetch job details using jobId(if isForEdit)---------------
+   const fetchJobDetails = async () => {
       try {
-         setLoading(true);
-         let response = await axios.post(API, values, { withCredentials: true });
-         success(response.data.msg);
+         setLoading({ buttonLoading: false, contentLoading: true });
+         let API = process.env.NEXT_PUBLIC_API + "/api/getJobDetails?jobId=" + jobId;
+         let response = await axios.get(API);
+         setJobDetail(response.data.jobDetails);
+      } catch (error: unknown) {
+         if (axios.isAxiosError(error)) {
+            errorMessage(error.response?.data.msg);
+         }
+      }
+      setLoading({ buttonLoading: false, contentLoading: false });
+   };
+
+   useEffect(() => {
+      if (isForEdit) {
+         fetchJobDetails();
+      } else {
+         setLoading({ buttonLoading: false, contentLoading: false });
+      }
+   }, []);
+
+   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+      let endPoint: string = "";
+      type PatchPayloadType = { jobId?: string };
+      type PayLoadType = FieldType | (FieldType & PatchPayloadType);
+      let payload: PayLoadType = {};
+      if (isForEdit) {
+         endPoint = "/api/EditJobDetails";
+         payload = {
+            ...values,
+            jobId,
+         };
+      } else {
+         endPoint = "/api/postJob";
+         payload = values;
+      }
+      let API = process.env.NEXT_PUBLIC_API + endPoint;
+      try {
+         setLoading({
+            buttonLoading: false,
+            contentLoading: false,
+         });
+         let response;
+         if (isForEdit) {
+            response = await axios.patch(API, payload, { withCredentials: true });
+         } else {
+            response = await axios.post(API, payload, { withCredentials: true });
+         }
+         success(response?.data.msg);
          router.push("/dashboard/myjob");
       } catch (error: unknown) {
          if (axios.isAxiosError(error)) {
@@ -63,7 +117,10 @@ export default function PostOrEditJob({
          }
          console.log(error);
       }
-      setLoading(false);
+      setLoading({
+         buttonLoading: false,
+         contentLoading: true,
+      });
 
       console.log("Success:", values);
    };
@@ -75,7 +132,46 @@ export default function PostOrEditJob({
    return (
       <div className="w-screen h-screen border- pt-[16%] md:pt-0 border-red-900 flex flex-col justify-center items-center overflow-x-scroll">
          {contextHolder}
-         <h3 className="  left-0 text-gray-700 font-bold text-[1.2rem]">Job Details</h3>
+
+         {isForEdit && !loading.contentLoading && (
+            <FormComponent
+               onFinish={onFinish}
+               onFinishFailed={onFinishFailed}
+               isForEdit={isForEdit}
+               jobDetail={jobDetail}
+               buttonLoading={loading.buttonLoading}
+            />
+         )}
+         {!isForEdit && (
+            <FormComponent
+               onFinish={onFinish}
+               onFinishFailed={onFinishFailed}
+               isForEdit={isForEdit}
+               buttonLoading={loading.buttonLoading}
+            />
+         )}
+         {loading.contentLoading && <Spin />}
+      </div>
+   );
+}
+
+interface PropsType {
+   onFinish: FormProps<FieldType>["onFinish"];
+   onFinishFailed: FormProps<FieldType>["onFinishFailed"];
+   isForEdit: boolean;
+   jobDetail?: responseType;
+   buttonLoading: boolean;
+}
+const FormComponent = ({
+   onFinish,
+   onFinishFailed,
+   isForEdit,
+   jobDetail,
+   buttonLoading,
+}: PropsType) => {
+   return (
+      <>
+         <h3 className="left-0 text-gray-700 font-bold text-[1.2rem] m-6">Job Details</h3>
          <div className="w-[90%] md:w-[70%] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg  h-[90%] md:h-[95%] overflow-y-scroll overflow-x-hidden  p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem] ">
             <Form
                name="basic"
@@ -100,6 +196,7 @@ export default function PostOrEditJob({
                   <div className="font-bold border- border-red-900 ">Location:</div>
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.location : ""}
+
                      name="location"
                      rules={[{ required: true, message: "" }]}
                      className="border- border-blue-300 !h-full m-0"
@@ -123,7 +220,7 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.minSalary : ""}
                      name="minSalary"
-                     rules={[{ required: true, message: "", min: 0 }]}
+                     rules={[{ required: true, message: ""}]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
                      <Input type="number" min={0} />
@@ -132,7 +229,7 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.maxSalary : ""}
                      name="maxSalary"
-                     rules={[{ required: true, message: "", min: 0 }]}
+                     rules={[{ required: true, message: ""}]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
                      <Input type="number" min={0} />
@@ -145,7 +242,7 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.minExp : ""}
                      name="minExp"
-                     rules={[{ required: true, message: "", min: 0 }]}
+                     rules={[{ required: true, message: ""}]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
                      <Input type="number" min={0} />
@@ -154,7 +251,7 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.maxExp : ""}
                      name="maxExp"
-                     rules={[{ required: true, message: "", min: 0 }]}
+                     rules={[{ required: true, message: ""}]}
                      className="border- border-blue-300 !h-full m-0 !flex justify-center items-center w-[17%] md:w-[7%]"
                   >
                      <Input type="number" min={0} />
@@ -167,7 +264,7 @@ export default function PostOrEditJob({
                   <Form.Item<FieldType>
                      initialValue={isForEdit ? jobDetail?.openings : ""}
                      name="openings"
-                     rules={[{ required: true, message: "", min: 0 }]}
+                     rules={[{ required: true, message: ""}]}
                      className="border- border-blue-300 !h-full m-0"
                   >
                      <Input type="number" min={0} />
@@ -189,8 +286,8 @@ export default function PostOrEditJob({
                <div className="mt-[5%] md:mt-[1%] w-full h-auto border- border-green-900 ">
                   <div className="font-bold border- border-red-900 ">Requiremnets:</div>
                   <Form.Item<FieldType>
-                     initialValue={isForEdit ? jobDetail?.requiremnets : ""}
-                     name="requiremnets"
+                     initialValue={isForEdit ? jobDetail?.requirements : ""}
+                     name="requirements"
                      rules={[{ required: true, message: "" }]}
                      className="border- border-blue-300 w-[90%] md:w-[40%] !h-full m-0"
                   >
@@ -214,7 +311,7 @@ export default function PostOrEditJob({
                <Form.Item className=" w-[30%]">
                   <Button
                      htmlType="submit"
-                     loading={loading}
+                     loading={buttonLoading}
                      className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
                   >
                      Post
@@ -222,6 +319,6 @@ export default function PostOrEditJob({
                </Form.Item>
             </Form>
          </div>
-      </div>
+      </>
    );
-}
+};

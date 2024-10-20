@@ -24,13 +24,6 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
       });
    };
 
-   const warning = (message: string) => {
-      messageApi.open({
-         type: "warning",
-         content: message,
-      });
-   };
-
    const router = useRouter();
    type FieldType = {
       email?: string;
@@ -39,12 +32,11 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
 
    const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
       let payload = { email: values.email, password: values.password, isEmployer };
-      // let API = process.env.NEXT_PUBLIC_API + "/api/login";
-      let API = " http://localhost:3000" + "/api/login";
-
+      let API = process.env.NEXT_PUBLIC_API + "/api/login";
       setLoading(true);
       try {
          let response=await axios.post(API, payload, { withCredentials: true });
+         localStorage.setItem("empId",response.data.employerId)
          success("Login Success!");
          let isOnboardingRequired=response.data.isOnboardingRequired;
          if(isEmployer){

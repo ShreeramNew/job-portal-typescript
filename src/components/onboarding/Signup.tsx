@@ -43,7 +43,8 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
          let API = process.env.NEXT_PUBLIC_API + "/api/signup";
          setLoading(true);
          try {
-            await axios.post(API, payload, { withCredentials: true });
+            let response=await axios.post(API, payload, { withCredentials: true });
+            localStorage.setItem("empId",response.data.employerId)
             success("SignUp Success!");
             router.push(isEmployer ? "/onboarding/employer" : "/main/home");
          } catch (error: unknown) {

@@ -4,11 +4,13 @@ import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import type { CollapseProps } from "antd";
-import { Collapse } from "antd";
+import { Collapse, Spin } from "antd";
 import { div } from "framer-motion/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 export default function Page() {
+   console.log("I am my Job");
+
    type JobType = {
       jobId?: string;
       title?: string;
@@ -18,15 +20,18 @@ export default function Page() {
    };
    const [myJobs, setMyJobs] = useState<JobType[]>([]);
 
-   let API = "http://localhost:3000/api/getJobs/employer";
+   const [loading, setLoading] = useState<boolean>(false);
+   let API = process.env.NEXT_PUBLIC_API + "/api/getJobs/employer";
 
    const fetchJobs = async () => {
       try {
+         setLoading(true);
          let response = await axios.get(API, { withCredentials: true });
-         setMyJobs(response.data.jobs);
+         setMyJobs(response.data.jobs.reverse());
       } catch (error) {
          console.log(error);
       }
+      setLoading(false);
    };
 
    useEffect(() => {
@@ -57,19 +62,23 @@ export default function Page() {
    };
    return (
       <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex">
-         <div className="md:w-[90%]">
-            <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">
-               MyJobs
+         {loading ? (
+            <Spin />
+         ) : (
+            <div className="md:w-[90%]">
+               <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">
+                  MyJobs
+               </div>
+               <div className="border- border-green-900 w-full h-auto md:h-[100%] md:overflow-y-scroll p-[2%]">
+                  <Collapse
+                     expandIconPosition="end"
+                     items={items}
+                     defaultActiveKey={[myJobs[0]?.jobId ?? ""]}
+                     onChange={onChange}
+                  />
+               </div>
             </div>
-            <div className="border- border-green-900 w-full h-auto md:h-[100%] md:overflow-y-scroll p-[2%]">
-               <Collapse
-                  expandIconPosition="end"
-                  items={items}
-                  defaultActiveKey={myJobs[0]?.jobId ?? []}
-                  onChange={onChange}
-               />
-            </div>
-         </div>
+         )}
       </div>
    );
 }
@@ -105,15 +114,15 @@ const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
          </div>
          <div className="flex justify-center md:justify-start items-center gap-[20px] mt-[2%]">
             <div className={StyleOfButton} onClick={() => router.push("/editJobDetail/" + id)}>
-               <CiEdit color="" size={23} title="Edit" />
+               <CiEdit size={23} title="Edit" />
                Edit
             </div>
             <div className={StyleOfButton} onClick={() => router.push("/main/jobDetail/" + id)}>
-               <FiEye color="" size={23} title="View" />
+               <FiEye size={23} title="View" />
                View
             </div>
             <div className={StyleOfButton}>
-               <MdDelete color="" size={23} title="Delete" />
+               <MdDelete size={23} title="Delete" />
                Delete
             </div>
          </div>
