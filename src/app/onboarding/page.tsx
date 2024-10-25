@@ -45,7 +45,7 @@ export default function Page() {
       console.log(file);
    };
    return (
-      <div className=" w-screen h-screen border-2 border-red-900 flex justify-center items-center ">
+      <div className=" w-screen h-screen border- border-red-900 flex justify-center items-center ">
          <div className=" w-[90%] md:w-[50%] h-[90%] overflow-y-scroll border- border-blue-900 flex flex-col justify-center items-center p-[10px] rounded-md shadow-blue-600 shadow-xl bg-gradient-to-br from-gray-400 via-gray-200 to-gray-300">
             <div className="border-2 border-gray-400 h-[100px] w-[100px] rounded-[100%] relative">
                <div className=" w-full h-full overflow-hidden rounded-[100%]">

@@ -4,13 +4,15 @@ import { CiEdit } from "react-icons/ci";
 import { FiEye } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import type { CollapseProps } from "antd";
-import { Collapse, Spin } from "antd";
-import { div } from "framer-motion/client";
+import { Collapse, Spin, Button, message, Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-export default function Page() {
-   console.log("I am my Job");
+import type { PopconfirmProps } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { triggerRefresh } from "@/features/GeneralSlice";
+import { RootState } from "@/store/Store";
 
+export default function Page() {
    type JobType = {
       jobId?: string;
       title?: string;
@@ -19,6 +21,7 @@ export default function Page() {
       expiresOn?: string;
    };
    const [myJobs, setMyJobs] = useState<JobType[]>([]);
+   const refresh = useSelector((state: RootState) => state.GeneralSlice.refresh);
 
    const [loading, setLoading] = useState<boolean>(false);
    let API = process.env.NEXT_PUBLIC_API + "/api/getJobs/employer";
@@ -36,7 +39,7 @@ export default function Page() {
 
    useEffect(() => {
       fetchJobs();
-   }, []);
+   }, [refresh]);
 
    const items: CollapseProps["items"] = myJobs.map(
       ({ title, applicants, postedOn, expiresOn, jobId }: JobType) => {
@@ -60,6 +63,7 @@ export default function Page() {
    const onChange = (key: string | string[]) => {
       console.log(key);
    };
+
    return (
       <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex">
          {loading ? (
@@ -92,6 +96,25 @@ interface PropsType {
 }
 
 const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
+   const dispatch = useDispatch();
+   //----------------------------Related to delete Job----------------------------
+   const confirm: PopconfirmProps["onConfirm"] = async (e) => {
+      const DeleteAPI = process.env.NEXT_PUBLIC_API + "/api/deleteJob?jobId=" + id;
+      try {
+         let response = await axios.delete(DeleteAPI, { withCredentials: true });
+         message.success(response.data.msg);
+         dispatch(triggerRefresh());
+      } catch (error) {
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg);
+         }
+      }
+   };
+
+   const cancel: PopconfirmProps["onCancel"] = (e) => {
+      return;
+   };
+
    const router = useRouter();
    const StyleOfButton =
       "flex gap-[2px] border-2 bg-blue-600 rounded-lg px-[3%] py-[1%] md:px-[1%] md:py-[0.2%] text-gray-300 cursor-pointer";
@@ -121,10 +144,19 @@ const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
                <FiEye size={23} title="View" />
                View
             </div>
-            <div className={StyleOfButton}>
-               <MdDelete size={23} title="Delete" />
-               Delete
-            </div>
+            <Popconfirm
+               title="Delete the Job"
+               description="Are you sure to delete this Job?"
+               onConfirm={confirm}
+               onCancel={cancel}
+               okText="Yes"
+               cancelText="No"
+            >
+               <div className={StyleOfButton}>
+                  <MdDelete size={23} title="Delete" />
+                  Delete
+               </div>
+            </Popconfirm>
          </div>
       </div>
    );

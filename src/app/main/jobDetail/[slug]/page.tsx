@@ -15,6 +15,7 @@ import JobPostCard from "@/components/cards/JobPostCard";
 import { useParams } from "next/navigation";
 import axios from "axios";
 
+
 interface JobDataType {
    id?: string;
    role?: string;
@@ -30,6 +31,7 @@ interface JobDataType {
    Requiremnets?: string[];
    openings?: number;
    jobType?: string;
+   applicants?: number;
 }
 
 interface CompanyData {
@@ -53,6 +55,7 @@ export default function Page() {
    const [isDescriptionOpen, SetIsDescriptionOpen] = useState<boolean>(true);
    const [loading, setLoading] = useState<boolean>(false);
    const [companyData, setCompanyData] = useState<CompanyData>({});
+
 
    //----------------Fetch Company Details---------------
    const fetchCompanyDetails = async (empId: string) => {
@@ -110,6 +113,7 @@ export default function Page() {
             Requiremnets: requirements,
             openings: responseDetails.openings,
             jobType: responseDetails.jobType,
+            applicants: responseDetails.applicants,
          };
          setJobData(DataToSet);
          fetchCompanyDetails(responseDetails.employerId);
@@ -258,6 +262,7 @@ export default function Page() {
                   skills={JobData.skills}
                   time={JobData.time}
                   openings={JobData.openings}
+                  applicants={JobData.applicants}
                />
             </div>
             <div className="bg-gray-100 shadow-lg w-full h-auto min-h-[70vh] rounded-lg border-2 border-gray-200 mt-[10px] relative">
@@ -446,6 +451,7 @@ interface PropsType {
    skills?: string[];
    time?: string;
    openings?: number;
+   applicants?: number;
 }
 
 const JobHighlight = ({
@@ -460,6 +466,7 @@ const JobHighlight = ({
    skills,
    time,
    openings,
+   applicants,
 }: PropsType) => {
    return (
       <div className=" w-full h-full rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
@@ -503,7 +510,7 @@ const JobHighlight = ({
                </div>
                <div className="flex justify-center items-center gap-[2px]">
                   <HiOutlineDocumentText />
-                  <div>Applicants:{190}</div>
+                  <div>Applicants:{160}</div>
                </div>
             </div>
 

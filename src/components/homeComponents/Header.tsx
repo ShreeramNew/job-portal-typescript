@@ -16,7 +16,7 @@ export default function Header() {
                </span>
             </h1>
 
-            <div className="cursor-pointer w-[20vh] md:scale-[1.3] bg-blue-600 p-[1.6vh] rounded-md text-white flex items-center justify-center hover:scale-[1.32] absolute bottom-[-25vh] right-[-2vh] md:bottom-[15%] md:right-[80%]" onClick={()=>router.push("/login")}>
+            <div className="cursor-pointer w-[23vh] md:w-[9rem] md:scale-[1.3] bg-blue-600 p-[1.6vh] rounded-md text-white flex items-center justify-center hover:scale-[1.32] absolute bottom-[-25vh] right-[-2vh] md:bottom-[15%] md:right-[80%]" onClick={()=>router.push("/login")}>
                Register Now <GoArrowUpRight color="white" />
             </div>
          </div>
