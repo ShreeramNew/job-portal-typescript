@@ -2,9 +2,12 @@
 import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input, Radio, Select } from "antd";
+import { Button, Checkbox, Form, Input, message, Radio, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import Loading from "react-loading";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
    username?: string;
@@ -20,11 +23,35 @@ type FieldType = {
 };
 
 export default function Page() {
+   let router = useRouter();
    const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
    const [haveExperience, setHaveExperience] = useState<boolean>(false);
+   const [profilePicURL, setProfilePicURL] = useState<string>(
+      "https://cdn.pixabay.com/photo/2012/03/04/00/36/baby-21971_1280.jpg"
+   );
+   const [loading, setLoading] = useState({
+      submitLoading: false,
+      uploadLoading: false,
+   });
 
-   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-      console.log("Success:", values);
+   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+      let API = process.env.NEXT_PUBLIC_API + "/api/onboarding/user";
+      try {
+         setLoading({
+            submitLoading: true,
+            uploadLoading: false,
+         });
+         let response = await axios.post(API, values, { withCredentials: true });
+         router.push("/main/home");
+      } catch (error) {
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg);
+         }
+      }
+      setLoading({
+         submitLoading: false,
+         uploadLoading: false,
+      });
    };
 
    const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
@@ -36,30 +63,86 @@ export default function Page() {
       console.log(resumeRef.current?.value);
    }, []);
 
-   const handleFileChange = (file?: File) => {
+   //-----------------------------------Handle resume change-------------------------------------
+   const handleFileChange = async (file?: File) => {
       if (file) {
          setButtonDisabled(false);
+         let API = process.env.NEXT_PUBLIC_API + "/api/upload/resume";
+         let formData = new FormData();
+         formData.append("resume", file);
+         try {
+            await axios.post(API, formData, { withCredentials: true });
+         } catch (error) {
+            if (axios.isAxiosError(error)) {
+               message.error(error.response?.data.msg);
+            }
+         }
       } else {
          setButtonDisabled(true);
       }
       console.log(file);
    };
+
+   //-----------------------------------Handle Profile Pic change----------------------------
+   const handleProfilePicChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files ? e.target.files[0] : null;
+      if (file) {
+         let API = process.env.NEXT_PUBLIC_API + "/api/upload/profilePic";
+         let formData = new FormData();
+         formData.append("profilePic", file);
+         try {
+            setLoading({
+               submitLoading: false,
+               uploadLoading: true,
+            });
+            let response = await axios.post(API, formData, { withCredentials: true });
+            setProfilePicURL(response.data.profileDetails.profile);
+         } catch (error) {
+            if (axios.isAxiosError(error)) {
+               message.error(error.response?.data.msg);
+            }
+         }
+         setLoading({
+            submitLoading: false,
+            uploadLoading: false,
+         });
+      }
+   };
+
    return (
       <div className=" w-screen h-screen border- border-red-900 flex justify-center items-center ">
          <div className=" w-[90%] md:w-[50%] h-[90%] overflow-y-scroll border- border-blue-900 flex flex-col justify-center items-center p-[10px] rounded-md shadow-blue-600 shadow-xl bg-gradient-to-br from-gray-400 via-gray-200 to-gray-300">
             <div className="border-2 border-gray-400 h-[100px] w-[100px] rounded-[100%] relative">
                <div className=" w-full h-full overflow-hidden rounded-[100%]">
-                  <Image
-                     src="https://cdn.pixabay.com/photo/2012/03/04/00/36/baby-21971_1280.jpg"
-                     alt="profile"
-                     width={200}
-                     height={200}
-                     objectFit="cover"
-                  />
+                  {loading.uploadLoading ? (
+                     <div className="w-full h-full flex justify-center items-center">
+                        <Loading color="gray" type="spin" height={25} width={25} />
+                     </div>
+                  ) : (
+                     <Image
+                        src={profilePicURL}
+                        alt="profile"
+                        width={600}
+                        height={600}
+                        className=" scale-[1.2] mt-[14%]"
+                     />
+                  )}
                </div>
-               <div className=" absolute bottom-1 right-1 bg-white">
-                  <HiPencilAlt color="gray" size={20} />
-               </div>
+               {!loading.uploadLoading && (
+                  <div
+                     className=" absolute bottom-1 right-1 bg-white"
+                     onClick={() => document.getElementById("profilePic")?.click()}
+                  >
+                     <HiPencilAlt color="gray" size={20} />
+                  </div>
+               )}
+               <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => handleProfilePicChange(e)}
+                  id="profilePic"
+                  accept=".jpeg,.png,.jpg"
+               />
             </div>
             <div className=" border- border-red-900 w-full h-[70%] relative">
                <Form
@@ -152,12 +235,11 @@ export default function Page() {
                                  name="yearsOrMonth"
                                  className=" border- border-green-900 w-[30%]"
                               >
-                             
                                  {/* <div className="hidden md:block"> */}
-                                    <Select defaultValue="years" placeholder="years">
-                                       <Select.Option value="months">months</Select.Option>
-                                       <Select.Option value="years">years</Select.Option>
-                                    </Select>
+                                 <Select defaultValue="years" placeholder="years">
+                                    <Select.Option value="months">months</Select.Option>
+                                    <Select.Option value="years">years</Select.Option>
+                                 </Select>
                                  {/* </div> */}
                               </Form.Item>
                            </div>
@@ -196,17 +278,18 @@ export default function Page() {
                   </div>
 
                   <Form.Item className=" border- border-red-900 w-[40%]">
-                     <button
+                     <Button
+                        htmlType="submit"
+                        loading={loading.submitLoading}
+                        disabled={buttonDisabled}
                         className={`${
                            buttonDisabled
                               ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-blue-600  cursor-pointer"
-                        } w-full py-[6px] rounded-lg text-white scale-[1.2] md:scale-[1]`}
-                        disabled={buttonDisabled}
-                        type="submit"
+                              : "bg-blue-600 cursor-pointer hover:!bg-blue-600 hover:!text-white"
+                        } w-full py-[6px] rounded-lg  text-white scale-[1.2] md:scale-[1]`}
                      >
                         Save
-                     </button>
+                     </Button>
                   </Form.Item>
                </Form>
             </div>

@@ -26,6 +26,7 @@ type FieldType = {
    gitHub?: string;
 };
 
+
 const ProfileData = {
    email: "shreerambca1@gmail.com",
    profile: "ggdg",
@@ -41,6 +42,7 @@ const ProfileData = {
    linkedin: "https://linkedin.com/in/michaeljohnson",
    gitHub: "https://github.com/michaeljohnson",
 };
+
 export default function Page() {
    const { slug } = useParams();
    const profileId = slug;
