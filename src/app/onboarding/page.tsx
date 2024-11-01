@@ -41,7 +41,7 @@ export default function Page() {
             submitLoading: true,
             uploadLoading: false,
          });
-         let response = await axios.post(API, values, { withCredentials: true });
+         await axios.post(API, values, { withCredentials: true });
          router.push("/main/home");
       } catch (error) {
          if (axios.isAxiosError(error)) {
@@ -97,6 +97,7 @@ export default function Page() {
             });
             let response = await axios.post(API, formData, { withCredentials: true });
             setProfilePicURL(response.data.profileDetails.profile);
+            localStorage.setItem("profilePic", response.data.profileDetails.profile);
          } catch (error) {
             if (axios.isAxiosError(error)) {
                message.error(error.response?.data.msg);

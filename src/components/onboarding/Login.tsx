@@ -35,14 +35,14 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
       let API = process.env.NEXT_PUBLIC_API + "/api/login";
       setLoading(true);
       try {
-         let response=await axios.post(API, payload, { withCredentials: true });
-         localStorage.setItem("empId",response.data.employerId)
+         let response = await axios.post(API, payload, { withCredentials: true });
+         localStorage.setItem("uid", response.data.uid);
          success("Login Success!");
-         let isOnboardingRequired=response.data.isOnboardingRequired;
-         if(isEmployer){
-            router.push( isOnboardingRequired?"/onboarding/employer" : "/dashboard/myjob");
-         }else{
-            router.push( isOnboardingRequired?"/onboarding" : "/dashboard/myjob");
+         let isOnboardingRequired = response.data.isOnboardingRequired;
+         if (isEmployer) {
+            router.push(isOnboardingRequired ? "/onboarding/employer" : "/dashboard/myjob");
+         } else {
+            router.push(isOnboardingRequired ? "/onboarding" : "/main/home");
          }
          setLoading(false);
       } catch (error: unknown) {
@@ -50,7 +50,7 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
             console.log(error);
             errorMessage(error.response?.data.msg);
          }
-         setLoading(false)
+         setLoading(false);
       }
    };
 

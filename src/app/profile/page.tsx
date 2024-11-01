@@ -45,7 +45,6 @@ const ProfileData = {
 
 export default function Page() {
    const { slug } = useParams();
-   const profileId = slug;
    const [saved, setSaved] = useState<boolean>(false);
 
    const resumeRef = useRef<HTMLInputElement>(null);
