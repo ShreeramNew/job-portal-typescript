@@ -17,9 +17,16 @@ export default function NavBar() {
    const [openMenu, setOpenMenu] = useState<boolean>(false);
    // const ProfilePicURL: string =
    //    "https://storage.googleapis.com/jobnow-95279.appspot.com/profilePics/1730364907711_F.jpg";
-   const ProfilePicURL: string = "";
+   let ProfilePicURL: string = "";
+   let uid: string = "";
+   let isUserLogined: boolean = false;
    const router = useRouter();
-   let isUserLogined = true;
+
+   if (typeof window !== "undefined") {
+      isUserLogined = localStorage.getItem("uid") ? true : false;
+      ProfilePicURL = localStorage.getItem("profilePic") ?? "";
+      uid = localStorage.getItem("uid") ?? "";
+   }
    return (
       <div className="hidden w-full md:flex justify-center items-center gap-[4%] sticky top-0 z-50 bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 p-[20px] text-gray-800 ">
          <div
@@ -99,11 +106,17 @@ export default function NavBar() {
                      <div className=" absolute right-2 top-[-8%]">
                         <IoTriangle color="white" />
                      </div>
-                     <div className=" cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] " onClick={()=>router.push("/profile")}>
+                     <div
+                        className=" cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] "
+                        onClick={() => router.push("/profile/" + uid)}
+                     >
                         <IoMdPerson color="gray" />
                         My Profile
                      </div>
-                     <div className="cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%]">
+                     <div
+                        className="cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%]"
+                        onClick={() => router.push("/editUserProfile")}
+                     >
                         <CiEdit color="gray" />
                         Edit Profile
                      </div>

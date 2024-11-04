@@ -36,7 +36,9 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
       setLoading(true);
       try {
          let response = await axios.post(API, payload, { withCredentials: true });
-         localStorage.setItem("uid", response.data.uid);
+         if (typeof window !== "undefined") {
+            localStorage.setItem("uid", response.data.uid);
+         }
          success("Login Success!");
          let isOnboardingRequired = response.data.isOnboardingRequired;
          if (isEmployer) {

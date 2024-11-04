@@ -44,7 +44,9 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
          setLoading(true);
          try {
             let response = await axios.post(API, payload, { withCredentials: true });
-            localStorage.setItem("uid", response.data.uid);
+            if (typeof window !== "undefined") {
+               localStorage.setItem("uid", response.data.uid);
+            }
             success("SignUp Success!");
             router.push(isEmployer ? "/onboarding/employer" : "/main/home");
          } catch (error: unknown) {

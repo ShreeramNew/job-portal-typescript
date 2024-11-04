@@ -1,55 +1,57 @@
 "use client";
-import { HiPencilAlt } from "react-icons/hi";
 import Image from "next/image";
-import type { FormProps } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { CiMail } from "react-icons/ci";
-import { TbWorld } from "react-icons/tb";
 import { TiSocialLinkedin } from "react-icons/ti";
 import { MdLocalPhone } from "react-icons/md";
 import { FaGithub } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
-import { CiSquarePlus } from "react-icons/ci";
 import { FaCheck } from "react-icons/fa6";
 import { FaPlus } from "react-icons/fa6";
-type FieldType = {
-   username?: string;
+import axios from "axios";
+
+type responseType = {
+   email?: string;
    bio?: string;
+   company?: string;
    education?: string;
    experience?: string;
-   company?: string;
-   time?: number;
-   yearsOrMonth?: string;
-   phone?: number;
-   linkedin?: string;
    gitHub?: string;
-};
-
-
-const ProfileData = {
-   email: "shreerambca1@gmail.com",
-   profile: "ggdg",
-   resume: "ghsghs",
-   username: "Michael Johnson",
-   bio: "Passionate about backend systems and scalability.",
-   education: "Bachelor's in Computer Engineering",
-   experience: "yes",
-   company: "Backend Solutions Corp.",
-   time: 2,
-   yearsOrMonth: "years",
-   phone: 9998765432,
-   linkedin: "https://linkedin.com/in/michaeljohnson",
-   gitHub: "https://github.com/michaeljohnson",
+   linkedin?: string;
+   phone?: number;
+   profile?: string;
+   resume?: string;
+   time?: number;
+   uid?: string;
+   username?: string;
+   yearsOrMonth?: string;
+   __v?: number;
+   _id?: string;
 };
 
 export default function Page() {
    const { slug } = useParams();
+
    const [saved, setSaved] = useState<boolean>(false);
+   const [ProfileData, setProfileData] = useState<responseType>({});
 
    const resumeRef = useRef<HTMLInputElement>(null);
+
+   const FetchProfile = async () => {
+      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user?uid=" + slug;
+
+      try {
+         let response = await axios.get(API);
+         setProfileData(response.data.user);
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
    useEffect(() => {
       console.log(resumeRef.current?.value);
+      FetchProfile();
    }, []);
 
    const SubHeadingStyle = "font-bold";
@@ -59,7 +61,7 @@ export default function Page() {
             <div className="border-2 border-gray-400 h-[100px] w-[100px] rounded-[100%] relative">
                <div className=" w-full h-full overflow-hidden rounded-[100%]">
                   <Image
-                     src="https://cdn.pixabay.com/photo/2012/03/04/00/36/baby-21971_1280.jpg"
+                     src={ProfileData.profile ?? ""}
                      alt="profile"
                      width={200}
                      height={200}
@@ -74,33 +76,44 @@ export default function Page() {
                   <div>{ProfileData.bio}</div>
                   <div className={SubHeadingStyle}>Education</div>
                   <div>{ProfileData.education}</div>
-                  <div className={SubHeadingStyle}>Experience</div>
-                  <div>
-                     {ProfileData.company}
-                     <div>
-                        {ProfileData.time} {ProfileData.yearsOrMonth}
-                     </div>
-                  </div>
+                  {ProfileData.experience === "yes" ? (
+                     <>
+                        <div className={SubHeadingStyle}>Experience</div>
+                        <div>
+                           {ProfileData.company}
+                           <div>
+                              {ProfileData.time} {ProfileData.yearsOrMonth}
+                           </div>
+                        </div>
+                     </>
+                  ) : null}
+
                   <div className={SubHeadingStyle}>Contact Us</div>
                   <div>
                      <ContactCard
                         email={ProfileData.email}
-                        phone={ProfileData.phone.toString()}
+                        phone={ProfileData.phone?.toString()}
                         gitHub={ProfileData.gitHub}
                         social={ProfileData.linkedin}
                      />
                   </div>
                </div>
             </div>
-            <div className=" flex justify-center items-center gap-[2%] w-full">
+            {/* <div className=" flex justify-center items-center gap-[2%] w-full">
                <div className=" cursor-pointer  border-2 border-blue-600 px-[2%] py-[1%] rounded-md">
                   {saved ? (
-                     <div className=" gap-[2px] flex justify-center items-center text-gray-700" onClick={()=>setSaved(false)} >
+                     <div
+                        className=" gap-[2px] flex justify-center items-center text-gray-700"
+                        onClick={() => setSaved(false)}
+                     >
                         <FaCheck size={20} />
                         Saved
                      </div>
                   ) : (
-                     <div className=" gap-[2px] flex justify-center items-center text-gray-700" onClick={()=>setSaved(true)}>
+                     <div
+                        className=" gap-[2px] flex justify-center items-center text-gray-700"
+                        onClick={() => setSaved(true)}
+                     >
                         <FaPlus size={20} />
                         Save
                      </div>
@@ -109,17 +122,17 @@ export default function Page() {
                <div className=" cursor-pointer flex justify-center items-center text-white bg-blue-600 px-[2%] py-[1%] rounded-md">
                   <FaRegFileAlt size={20} /> Resume
                </div>
-            </div>
+            </div> */}
          </div>
       </div>
    );
 }
 
 interface ConatctPropstype {
-   email: string;
-   phone: string;
-   social: string;
-   gitHub: string;
+   email?: string;
+   phone?: string;
+   social?: string;
+   gitHub?: string;
 }
 const ContactCard = ({ email, phone, social, gitHub }: ConatctPropstype) => {
    return (

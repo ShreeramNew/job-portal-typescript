@@ -46,7 +46,10 @@ export default function Page() {
    };
 
    const fetchCompanyDetails = async () => {
-      let empId = localStorage.getItem("empId");
+      let empId: string = "";
+      if (typeof window !== "undefined") {
+         empId = localStorage.getItem("empId") ?? "";
+      }
       if (empId) {
          let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/employer?empId=" + empId;
          try {
@@ -59,8 +62,8 @@ export default function Page() {
             }
          }
          setLoading({ buttonLoading: false, contentLoading: false });
-      }else{
-         alert("Unauthorized access!")
+      } else {
+         alert("Unauthorized access!");
       }
    };
 
