@@ -1,32 +1,41 @@
 "use client";
-import { Input, Space } from "antd";
+import { Input, message, Space } from "antd";
 const { Search } = Input;
 import { GoArrowUpRight } from "react-icons/go";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { GetProps } from "antd";
 import { IoMdPerson } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoTriangle } from "react-icons/io5";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { pushResult, toggleLoading } from "@/features/SearchSlice";
+import useSearchText from "@/helpers/SearchText";
 
 export default function NavBar() {
    type SearchProps = GetProps<typeof Input.Search>;
-   const onSearch: SearchProps["onSearch"] = (value, _e, info) => alert(value);
+   const dispatch = useDispatch();
+   const PathName = usePathname();
+   const router = useRouter();
+   const [searchText, setSearchText] = useState<string>("");
+   const SearchText = useSearchText();
+
+   const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
+      SearchText(value);
+   };
    const [openMenu, setOpenMenu] = useState<boolean>(false);
-   // const ProfilePicURL: string =
-   //    "https://storage.googleapis.com/jobnow-95279.appspot.com/profilePics/1730364907711_F.jpg";
    let ProfilePicURL: string = "";
    let uid: string = "";
    let isUserLogined: boolean = false;
-   const router = useRouter();
-
    if (typeof window !== "undefined") {
       isUserLogined = localStorage.getItem("uid") ? true : false;
       ProfilePicURL = localStorage.getItem("profilePic") ?? "";
       uid = localStorage.getItem("uid") ?? "";
    }
+
    return (
       <div className="hidden w-full md:flex justify-center items-center gap-[4%] sticky top-0 z-50 bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 p-[20px] text-gray-800 ">
          <div
@@ -44,6 +53,9 @@ export default function NavBar() {
          <div
             className="cursor-pointer hover:underline underline-offset-4 "
             onClick={() => {
+               if (typeof window !== "undefined") {
+                  localStorage.setItem("isSearching", "no");
+               }
                router.push("/main/jobs");
             }}
          >
@@ -58,11 +70,14 @@ export default function NavBar() {
             Applies
          </div>
          <Search
-            className="w-[300px]"
+            className="w-[300px] z-[21]"
             placeholder="Search Job"
             enterButton
             size="large"
             onSearch={onSearch}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onBlur={() => setSearchText("")}
          />
 
          {!isUserLogined ? (
@@ -81,7 +96,7 @@ export default function NavBar() {
                </div>
             </>
          ) : (
-            <div className=" border- border-red-900 w-[40%]  h-[7.5vh] absolute right-6 ">
+            <div className=" border- border-red-900 w-[40%]  h-[7.5vh] absolute right-6 z-[20]">
                <div
                   className=" bg-gray-100 w-[50px] h-[50px] rounded-full absolute right-0 cursor-pointer overflow-hidden fle"
                   onClick={() => setOpenMenu((prev) => !prev)}

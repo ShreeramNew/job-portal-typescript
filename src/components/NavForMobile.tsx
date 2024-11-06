@@ -7,11 +7,14 @@ import { GoArrowUpRight } from "react-icons/go";
 import { FaSearch, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SearchProps } from "antd/es/input";
+import useSearchText from "@/helpers/SearchText";
 
 export default function NavForMobile() {
    const [open, setOpen] = useState(false);
    const [searchOpen, setSearchOpen] = useState(false);
    const router = useRouter();
+   const SearchText = useSearchText();
 
    const showDrawer = () => {
       setOpen(true);
@@ -19,8 +22,9 @@ export default function NavForMobile() {
    const onClose = () => {
       setOpen(false);
    };
-   const onSearch = () => {
+   const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
       setSearchOpen(false);
+      SearchText(value);
    };
    return (
       <div className=" md:hidden lg:hidden w-full sticky top-0 z-50">

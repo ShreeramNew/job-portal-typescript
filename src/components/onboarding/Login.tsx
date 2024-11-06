@@ -52,6 +52,8 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
             console.log(error);
             errorMessage(error.response?.data.msg);
          }
+         alert('Yeah')
+         alert(error)
          setLoading(false);
       }
    };

@@ -15,7 +15,7 @@ interface PropsType {
    maxSalary: number;
    location: string;
    skills: string[];
-   time: number;
+   time?: string;
 }
 export default function JobPostCard({
    id,
@@ -31,7 +31,7 @@ export default function JobPostCard({
 }: PropsType) {
    const router=useRouter();
    return (
-      <div className=" w-full min-h-[186px] md:min-h-[156px] lg:min-h-[156px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer " onClick={()=>router.push("/main/jobDetail/"+id)}>
+      <div className=" w-full min-h-[186px] md:min-h-[166px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer " onClick={()=>router.push("/main/jobDetail/"+id)}>
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />
@@ -59,16 +59,16 @@ export default function JobPostCard({
                <div>{location}</div>
             </div>
          </div>
-         <div className=" w-full h-[30px] absolute bottom-[20px] md:bottom-0 lg:bottom-0 overflow-hidden flex gap-[14px] items-center pl-[10px]">
+         <div className=" w-[100%] h-[30px] absolute bottom-[20px] md:bottom-2 overflow-hidden flex gap-[14px] items-center pl-[10px] border- border-red-900 overf">
             {skills.map((skill) => {
                return <SkillCard title={skill} />;
             })}
          </div>
-         <div className=" flex justify-center items-center absolute bottom-0 right-[10px]">
+         <div className=" flex justify-center items-center absolute bottom-0 md:bottom-2 right-[10px]">
             <div>
                <IoTimeOutline size={15} />
             </div>
-            <div className="text-[13px] text-gray-800 ">{time}d ago</div>
+            <div className="text-[13px] text-gray-800 ">{time} ago</div>
          </div>
       </div>
    );
@@ -76,7 +76,7 @@ export default function JobPostCard({
 
 const SkillCard = ({ title }: { title: string }) => {
    return (
-      <div className="text-[13px] h-[20px] bg-gray-300 p-[10px] px-[13px] flex justify-center items-center rounded-xl text-gray-700 pb-[12px]">
+      <div className="text-[13px] h-[20px] bg-gray-300 p-[10px] px-[13px] flex justify-center items-center rounded-xl text-gray-700 pb-[12px] flex-shrink-0">
          <div>{title}</div>
       </div>
    );

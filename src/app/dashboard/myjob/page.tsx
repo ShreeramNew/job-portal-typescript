@@ -11,6 +11,7 @@ import type { PopconfirmProps } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { triggerRefresh } from "@/features/GeneralSlice";
 import { RootState } from "@/store/Store";
+import Image from "next/image";
 
 export default function Page() {
    type JobType = {
@@ -68,7 +69,7 @@ export default function Page() {
       <div className="mt-[20%] md:mt-0 h-auto w-[100%] md:h-screen border- border-red-900  md:w-screen md:flex">
          {loading ? (
             <Spin />
-         ) : (
+         ) : myJobs.length > 0 ? (
             <div className="md:w-[90%]">
                <div className=" md:hidden md:h-screen text-xl font-bold text-gray-700 p-[2%]">
                   MyJobs
@@ -82,6 +83,8 @@ export default function Page() {
                   />
                </div>
             </div>
+         ) : (
+            <HandleNoJob />
          )}
       </div>
    );
@@ -158,6 +161,22 @@ const EachRow = ({ title, applicants, postedOn, expiresOn, id }: PropsType) => {
                </div>
             </Popconfirm>
          </div>
+      </div>
+   );
+};
+
+const HandleNoJob = () => {
+   const router = useRouter();
+
+   return (
+      <div className=" w-full h-full flex justify-center items-center flex-col gap-4">
+         <div className=" border- border-black flex gap-2 justify-center items-center ">
+            <div>
+               <Image src={"/nojobs.svg"} alt="No Jobs" width={100} height={100} />
+            </div>
+            <div className="text-[1.5rem]">You haven't posted any jobs!</div>
+         </div>
+        
       </div>
    );
 };
