@@ -12,25 +12,8 @@ import axios from "axios";
 import TimeStampToAgo from "@/helpers/TimeStampToAgo";
 import Loading from "react-loading";
 import Image from "next/image";
+import EachJobType from "@/types/EachJobType";
 
-type EachJobType = {
-   _id: string;
-   employerId: string;
-   company: string;
-   jobTitle: string;
-   jobType: string;
-   location: string;
-   minSalary: number;
-   maxSalary: number;
-   responsibilities: string;
-   requirements: string;
-   skills: string;
-   minExp: number;
-   maxExp: number;
-   openings: number;
-   __v: number;
-   postedOn: string;
-};
 
 export default function Page() {
    return (
@@ -40,9 +23,12 @@ export default function Page() {
    );
 }
 
+
+
 const ListOfJobs = () => {
    const [JobData, setJobData] = useState<EachJobType[]>([]);
    let searchResult = useSelector((state: RootState) => state.SearchSlice.results);
+   let filterResult = useSelector((state: RootState) => state.SearchSlice.filterResults);
    let jobsLoading = useSelector((state: RootState) => state.SearchSlice.loading);
 
    const dispatch = useDispatch();
@@ -70,6 +56,11 @@ const ListOfJobs = () => {
    useEffect(() => {
       setJobData(searchResult);
    }, [searchResult]);
+
+   useEffect(() => {
+      setJobData(filterResult);
+   }, [filterResult]);
+
 
    const [open, setOpen] = useState<boolean>(false);
    const showDrawer = () => {
@@ -118,8 +109,8 @@ const ListOfJobs = () => {
                         minSalary={job.minSalary}
                         maxSalary={job.maxSalary}
                         location={job.location}
-                        skills={job.skills.split(",").slice(0, 4)}
-                        time={TimeStampToAgo(job.postedOn)}
+                        skills={job.skills?.split(",").slice(0, 4)}
+                        time={TimeStampToAgo(job.postedOn??"")}
                      />
                   );
                })

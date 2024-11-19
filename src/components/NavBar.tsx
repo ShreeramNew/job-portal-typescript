@@ -102,14 +102,7 @@ export default function NavBar() {
                   onClick={() => setOpenMenu((prev) => !prev)}
                >
                   {ProfilePicURL !== "" ? (
-                     <Image
-                        src={
-                           "https://storage.googleapis.com/jobnow-95279.appspot.com/profilePics/1730364907711_F.jpg"
-                        }
-                        alt="profile"
-                        width={100}
-                        height={100}
-                     />
+                     <Image src={ProfilePicURL} alt="profile" width={100} height={100} />
                   ) : (
                      <div className="w-full h-full flex justify-center items-center ">
                         <IoMdPerson color="gray" size={36} />

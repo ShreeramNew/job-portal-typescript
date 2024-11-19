@@ -48,12 +48,25 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
                localStorage.setItem("uid", response.data.uid);
             }
             success("SignUp Success!");
-            router.push(isEmployer ? "/onboarding/employer" : "/main/home");
+            if (typeof window !== undefined) {
+               let applying = JSON.parse(localStorage.getItem("applying") ?? "");
+               if (applying && applying.isApplying) {
+                  localStorage.setItem(
+                     "applying",
+                     JSON.stringify({
+                        isApplying: false,
+                        jobId: "",
+                     })
+                  );
+                  router.push("/main/jobDetail/" + applying.jobId);
+               }
+            }
+            router.push(isEmployer ? "/onboarding/employer" : "/onboarding");
          } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-               console.log(error);
-               errorMessage(error.response?.data.msg);
+               errorMessage(error.response?.data.msg || "SignUp Failed!");
             }
+            console.log(error);
          }
          setLoading(false);
       } else {

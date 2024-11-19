@@ -6,15 +6,15 @@ import { IoTimeOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 
 interface PropsType {
-   id: string;
-   role: string;
-   company: string;
-   minYear: number;
-   maxYear: number;
-   minSalary: number;
-   maxSalary: number;
-   location: string;
-   skills: string[];
+   id?: string;
+   role?: string;
+   company?: string;
+   minYear?: number;
+   maxYear?: number;
+   minSalary?: number;
+   maxSalary?: number;
+   location?: string;
+   skills?: string[];
    time?: string;
 }
 export default function JobPostCard({
@@ -60,7 +60,7 @@ export default function JobPostCard({
             </div>
          </div>
          <div className=" w-[100%] h-[30px] absolute bottom-[20px] md:bottom-2 overflow-hidden flex gap-[14px] items-center pl-[10px] border- border-red-900 overf">
-            {skills.map((skill) => {
+            {skills?.map((skill) => {
                return <SkillCard title={skill} />;
             })}
          </div>

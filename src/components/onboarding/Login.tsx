@@ -41,21 +41,32 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
          }
          success("Login Success!");
          let isOnboardingRequired = response.data.isOnboardingRequired;
+         if (typeof window !== undefined) {
+            let applying = JSON.parse(localStorage.getItem("applying") ?? "");
+            console.log(applying);
+            if (applying && applying.isApplying) {
+               localStorage.setItem(
+                  "applying",
+                  JSON.stringify({
+                     isApplying: false,
+                     jobId: "",
+                  })
+               );
+               return router.push("/main/jobDetail/" + applying.jobId);
+            }
+         }
          if (isEmployer) {
             router.push(isOnboardingRequired ? "/onboarding/employer" : "/dashboard/myjob");
          } else {
             router.push(isOnboardingRequired ? "/onboarding" : "/main/home");
          }
-         setLoading(false);
       } catch (error: unknown) {
          if (axios.isAxiosError(error)) {
-            console.log(error);
-            errorMessage(error.response?.data.msg);
+            errorMessage(error.response?.data.msg || "Login Failed!");
          }
-         alert('Yeah')
-         alert(error)
-         setLoading(false);
+         console.log(error);
       }
+      setLoading(false);
    };
 
    const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {

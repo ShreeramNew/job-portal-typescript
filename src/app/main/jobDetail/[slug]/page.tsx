@@ -12,11 +12,12 @@ import { TbWorld } from "react-icons/tb";
 import { motion, AnimatePresence } from "framer-motion";
 import { TiSocialLinkedin } from "react-icons/ti";
 import JobPostCard from "@/components/cards/JobPostCard";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import TimeStampToAgo from "@/helpers/TimeStampToAgo";
 import ReactLoading from "react-loading";
-import { message } from "antd";
+import { Button, message } from "antd";
+import Cookies from "js-cookie";
 
 interface JobDataType {
    id?: string;
@@ -155,14 +156,14 @@ export default function Page() {
    };
    const [SimilarJobs, setSimilarJobs] = useState<EachJobType[]>([]);
    const FetchSimilarJobs = async () => {
-      const API = process.env.NEXT_PUBLIC_API + "/api/getJobs/similarJobs?jobId="+slug;
+      const API = process.env.NEXT_PUBLIC_API + "/api/getJobs/similarJobs?jobId=" + slug;
       try {
          setcontentLoading({ jobsLoading: false, similarJobsLoading: true });
          let response = await axios.get(API);
          setSimilarJobs(response.data.jobs);
       } catch (error) {
-         if(axios.isAxiosError(error)){
-            message.error(error.response?.data.msg)
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg);
          }
          setIsError(true);
       }
@@ -179,9 +180,7 @@ export default function Page() {
    return (
       <>
          {isError ? (
-            <div className=" w-full h-[90vh] flex justify-center items-center">
-               Error
-            </div>
+            <div className=" w-full h-[90vh] flex justify-center items-center">Error</div>
          ) : (
             <div className="w-screen h-[89vh] grid grid-cols-1  md:grid-cols-12  overflow-x-hidden">
                {contentLoading.jobsLoading ? (
@@ -201,7 +200,7 @@ export default function Page() {
                            minSalary={JobData.minSalary}
                            maxSalary={JobData.maxSalary}
                            location={JobData.location}
-                           skills={JobData.skills?.slice(0,5)}
+                           skills={JobData.skills?.slice(0, 5)}
                            time={JobData.time}
                            openings={JobData.openings}
                            applicants={JobData.applicants}
@@ -329,7 +328,7 @@ export default function Page() {
                            minSalary={job.minSalary}
                            maxSalary={job.maxSalary}
                            location={job.location}
-                           skills={job.skills.split(",").slice(0,4)}
+                           skills={job.skills.split(",").slice(0, 4)}
                            time={TimeStampToAgo(job.postedOn)}
                         />
                      );
@@ -416,6 +415,48 @@ const JobHighlight = ({
    openings,
    applicants,
 }: PropsType) => {
+   const [appied, setApplied] = useState<boolean>(false);
+   const [loading, setLoading] = useState<boolean>(false);
+   const router = useRouter();
+
+   const handleApply = async () => {
+      let API = process.env.NEXT_PUBLIC_API + "/api/applyForJob";
+      try {
+         let authToken = Cookies.get("authToken");
+         let uid = "";
+         if (typeof window !== undefined) {
+            uid = localStorage.getItem("uid") ?? "";
+         }
+         if (uid !== "") {
+            setLoading(true);
+            await axios.patch(
+               API,
+               {
+                  jobId: id,
+               },
+               { withCredentials: true }
+            );
+            setApplied(true);
+         } else {
+            if (typeof window !== undefined) {
+               localStorage.setItem(
+                  "applying",
+                  JSON.stringify({
+                     isApplying: true,
+                     jobId: id,
+                  })
+               );
+            }
+            router.push("/login");
+         }
+      } catch (error) {
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg || "Failed to Apply!");
+         }
+      }
+      setLoading(false);
+   };
+
    return (
       <div className=" w-full h-full rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
@@ -463,12 +504,19 @@ const JobHighlight = ({
             </div>
 
             <div className=" md:pb-[10px]">
-               <button
-                  type="button"
-                  className=" bg-blue-500 text-white p-[5px] px-[20px] rounded-lg cursor-pointer hover:scale-[1.02]"
+               <Button
+                  htmlType="submit"
+                  onClick={handleApply}
+                  loading={loading}
+                  disabled={appied}
+                  className={`  ${
+                     !appied
+                        ? "bg-blue-500 hover:!bg-blue-600 "
+                        : "bg-gray-500 hover:!bg-gray-500 cursor-not-allowed "
+                  } py-[5px] text-xl rounded-md w-full !text-white hover:!text-white`}
                >
-                  Apply
-               </button>
+                  {appied ? "Applied" : "Apply"}
+               </Button>
             </div>
          </div>
       </div>

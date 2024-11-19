@@ -1,24 +1,73 @@
 import { HiOutlineAdjustmentsVertical } from "react-icons/hi2";
 import type { CollapseProps } from "antd";
 import { Collapse } from "antd";
-import { RiArrowRightSLine } from "react-icons/ri";
-
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
 import { Checkbox } from "antd";
 import type { CheckboxProps } from "antd";
-const onChange: CheckboxProps["onChange"] = (e) => {
-   console.log(`checked = ${e.target.checked}`);
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/Store";
+import { changeFilters, pushFilterResults } from "@/features/SearchSlice";
+import { useEffect, useMemo, useState } from "react";
+import { q } from "framer-motion/client";
+import EachJobType from "@/types/EachJobType";
+
+type filtersType = {
+   experience: number[];
+   location: string[];
+   salary: number[];
 };
 
-const CheckboxContent = ({ title }: { title: string }) => {
+type nameType = "location" | "experience" | "salary";
+
+const CheckboxContent = ({
+   title,
+   value,
+   name,
+}: {
+   title: string;
+   value: string | number[];
+   name: string;
+}) => {
+   const filters = useSelector((state: RootState) => state.SearchSlice.filters);
+   let dispatch = useDispatch();
+
+   //----------------Handle checking or unchecking the checkbox----------
+   const onChange: CheckboxProps["onChange"] = (e) => {
+      let checkedValue = e.target.value;
+      let isChecked = e.target.checked;
+      let name: nameType = e.target.name as nameType;
+
+      let newFilters: filtersType = {
+         salary: [],
+         experience: [],
+         location: [],
+      };
+
+      if (name === "location") {
+         newFilters = {
+            ...filters,
+            location: isChecked
+               ? filters.location.concat([checkedValue])
+               : filters.location.filter((item) => item !== checkedValue),
+         };
+      } else {
+         newFilters = {
+            ...filters,
+            [name]: isChecked
+               ? filters[name].concat(checkedValue)
+               : filters[name].filter((item) => !checkedValue.includes(item)),
+         };
+      }
+
+      dispatch(changeFilters(newFilters));
+   };
    return (
       <div className=" w-full border- border-gray-900 px-[20px] text-blue-600">
-         <Checkbox onChange={onChange}>
+         <Checkbox
+            className="filterCheckBox"
+            name={name}
+            onChange={(e) => onChange(e)}
+            value={value}
+         >
             <div className="text-gray-600">{title}</div>
          </Checkbox>
       </div>
@@ -28,52 +77,37 @@ const CheckboxContent = ({ title }: { title: string }) => {
 const items: CollapseProps["items"] = [
    {
       key: "1",
-      label: "Work mode",
-      children: (
-         <div>
-            <CheckboxContent title="Any" />
-            <CheckboxContent title="Work from home" />
-            <CheckboxContent title="Work from office" />
-            <CheckboxContent title="Hybrid" />
-         </div>
-      ),
-   },
-   {
-      key: "2",
       label: "Experience",
       children: (
          <div>
-            <CheckboxContent title="Any" />
-            <CheckboxContent title="0-1 Year" />
-            <CheckboxContent title="1-5 Year" />
-            <CheckboxContent title="5-10 Year" />
+            <CheckboxContent name="experience" value={[0, 1]} title="0-1 Year" />
+            <CheckboxContent name="experience" value={[2, 5]} title="2-5 Year" />
+            <CheckboxContent name="experience" value={[6, 10]} title="6-10 Year" />
          </div>
       ),
    },
-   
+
    {
-      key: "3",
+      key: "2",
       label: "Location",
       children: (
          <div>
-            <CheckboxContent title="Any" />
-            <CheckboxContent title="Banglore" />
-            <CheckboxContent title="Delhi" />
-            <CheckboxContent title="Chennai" />
-            <CheckboxContent title="Noida" />
-            <CheckboxContent title="Mumbai" />
+            <CheckboxContent name="location" value={"bangalore"} title="Bangalore" />
+            <CheckboxContent name="location" value={"delhi"} title="Delhi" />
+            <CheckboxContent name="location" value={"chennai"} title="Chennai" />
+            <CheckboxContent name="location" value={"noida"} title="Noida" />
+            <CheckboxContent name="location" value={"mumbai"} title="Mumbai" />
          </div>
       ),
    },
    {
-      key: "4",
+      key: "3",
       label: "Salary",
       children: (
          <div>
-            <CheckboxContent title="Any" />
-            <CheckboxContent title="2-6 LPA" />
-            <CheckboxContent title="6-20 LPA" />
-            <CheckboxContent title="20-50 LPA" />
+            <CheckboxContent name="salary" value={[2, 6]} title="2-6 LPA" />
+            <CheckboxContent name="salary" value={[7, 20]} title="7-20 LPA" />
+            <CheckboxContent name="salary" value={[21, 50]} title="21-50 LPA" />
          </div>
       ),
    },
@@ -81,8 +115,58 @@ const items: CollapseProps["items"] = [
 
 export default function FilterCard() {
    const onChange = (key: string | string[]) => {
-      console.log(key);
+      // console.log(key);
    };
+
+   const filters = useSelector((state: RootState) => state.SearchSlice.filters);
+   const searchResults = useSelector((state: RootState) => state.SearchSlice.results);
+   const dispatch = useDispatch();
+   let sortedExperience = useMemo(
+      () => [...filters.experience].sort((a, b) => a - b),
+      [filters.experience]
+   );
+   let sortedSalary = useMemo(() => [...filters.salary].sort((a, b) => a - b), [filters.salary]);
+   //-----------------------Handle filter change----------------------
+   const applyNewFilters = (filters: filtersType) => {
+      let finalResult: EachJobType[] = [];
+
+      finalResult = searchResults.filter((job) => {
+         let matchesExperience =
+            filters.experience.length === 0 ||
+            (job.minExp &&
+               job.maxExp &&
+               job.minExp >= sortedExperience[0] &&
+               job.maxExp <= sortedExperience[sortedExperience.length - 1]);
+
+         let matchesLocation =
+            filters.location.length === 0 ||
+            (job.location && filters.location.includes(job.location?.toLocaleLowerCase()));
+
+         let matchesSalary =
+            filters.salary.length === 0 ||
+            (job.minSalary &&
+               job.maxSalary &&
+               job.minSalary >= sortedSalary[0] &&
+               job.maxSalary <= sortedSalary[sortedSalary.length - 1]);
+
+         return matchesExperience && matchesLocation && matchesSalary;
+      });
+
+      //-----------Once all the filter is applied, update the Filter result
+      dispatch(pushFilterResults(finalResult));
+   };
+
+   useEffect(() => {
+      if (searchResults.length > 0) {
+         applyNewFilters(filters);
+      }
+   }, [filters]);
+
+   const handleClear = () => {
+      let allCheckbox = document.querySelectorAll<HTMLInputElement>(".filterCheckBox");
+      allCheckbox.forEach((checkbox) => (checkbox.checked = false));
+   };
+
    return (
       <div className="w-[100%] lg:w-[300px] h-auto  bg-white border-2 border-gray-100 lg:ml-[60px] lg:mt-[10px] shadow-2xl rounded-xl">
          <div className="hidden lg:flex md:flex justify-between items-center p-[20px] border-b- border-gray-800">
@@ -90,13 +174,15 @@ export default function FilterCard() {
                <div>Filters</div>
                <HiOutlineAdjustmentsVertical />
             </div>
-            <div className="text-blue-400 cursor-pointer">Clear</div>
+            {/* <div className="text-blue-400 cursor-pointer" onClick={handleClear}>
+               Clear
+            </div> */}
          </div>
          <hr className="hidden md:block lg:block" />
          <div className="font-bold">
             <Collapse
                items={items}
-               defaultActiveKey={["1", "2","3","4"]}
+               defaultActiveKey={["1", "2", "3"]}
                onChange={onChange}
                expandIconPosition={"end"}
                ghost={true}
