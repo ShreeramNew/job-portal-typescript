@@ -52,9 +52,6 @@ export default function LeftNavbar({ForDrawer}:{ForDrawer:boolean}) {
                      objectFit="cover"
                   />
                </div>
-               <div className=" absolute bottom-1 right-1 bg-white">
-                  <HiPencilAlt color="gray" size={20} />
-               </div>
             </div>
             <div>
                <div>{title}</div>

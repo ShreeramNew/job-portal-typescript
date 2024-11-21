@@ -1,53 +1,77 @@
 "use client";
-import ShowApplicants from "@/components/dashboard/ShowApplicants";
+import { message } from "antd";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Loading from "react-loading";
 export default function Page() {
-   type applicantDataType = {
-      profileId?: string;
-      profile?: string;
-      resume?: string;
-      username?: string;
-      bio?: string;
-      education?: string;
-      experience?: string;
-      company?: string;
-      time?: number;
-      yearsOrMonth?: string;
-      phone?: number;
-      linkedin?: string;
-      gitHub?: string;
+   type hightlightsType = {
+      jobId?: string;
+      title?: string;
+      applicants?: number;
+      postedOn?: string;
+      expiresOn?: string;
+      savedApplicants?:number;
    };
 
-   const applicants: applicantDataType[] = [
-      {
-         profileId: "12345",
-         profile: "ggdg",
-         resume: "ghsghs",
-         username: "Shreeram",
-         bio: "This is my bio hjghdgdsb gdggdsgds ghgdggd  hjghdgdsb gdggdsgds ghgdggd hjghdgdsb gdggdsgds ghgdggd hjghdgdsb gdggdsgds ghgdggd hjghdgdsb gdggdsgds ghgdggd hjghdgdsb gdggdsgds ghgdggd hjghdgdsb gdggdsgds ghgdggd",
-         education: "BCA",
-         experience: "yes",
-         company: "Tikanga pvt ltd",
-         time: 1,
-         yearsOrMonth: "months",
-         phone: 1234567890,
-         linkedin: "https://linkedin.com/in/shreeram",
-         gitHub: "https://github.com/shreeram",
-      },
-      {
-         profileId: "12346",
-         profile: "ggdg",
-         resume: "ghsghs",
-         username: "John Doe",
-         bio: "Experienced software engineer with a passion for frontend development.",
-         education: "Bachelor's in Computer Science",
-         experience: "5 years",
-         company: "Tech Solutions Inc.",
-         time: 40,
-         yearsOrMonth: "months",
-         phone: 9876543210,
-         linkedin: "https://linkedin.com/in/johndoe",
-         gitHub: "https://github.com/johndoe",
-      },
-   ];
-   return <ShowApplicants applicants={applicants} />;
+   const [jobs, setJobs] = useState<hightlightsType[]>([{}]);
+   const [loading, setLoading] = useState<boolean>(true);
+
+   const fetchJobHightlights = async () => {
+      const API = process.env.NEXT_PUBLIC_API + "/api/getJobs/employer";
+      try {
+         setLoading(true);
+         let response = await axios.get(API, { withCredentials: true });
+         setJobs(response.data.jobs);
+      } catch (error) {
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg);
+         }
+      }
+      setLoading(false);
+   };
+
+   useEffect(() => {
+      fetchJobHightlights();
+   }, []);
+
+   return (
+      <div className=" w-screen px-[2rem]">
+         <div className=" grid grid-cols-5 gap-2 borders py-[2rem]">
+            {loading ? (
+               <Loading type="spin" width={20} height={20} />
+            ) : (
+               jobs.map((job: hightlightsType) => (
+                  <HighlightCards
+                     key={job.jobId}
+                     id={job.jobId ?? ""}
+                     JobTitle={job.title ?? ""}
+                     applicants={job.savedApplicants ?? 0}
+                  />
+               ))
+            )}
+         </div>
+      </div>
+   );
 }
+
+const HighlightCards = ({
+   id,
+   JobTitle,
+   applicants,
+}: {
+   id: string;
+   JobTitle: string;
+   applicants: number;
+}) => {
+   const router = useRouter();
+   return (
+      <div
+         className=" flex flex-col justify-center items-center  h-[10rem] border-gray-400 border-2 cursor-pointer  rounded-xl"
+         onClick={() => router.push("/dashboard/saved/" + id)}
+      >
+         <div>{JobTitle}</div>
+         <div>{applicants} applicants</div>
+      </div>
+   );
+};

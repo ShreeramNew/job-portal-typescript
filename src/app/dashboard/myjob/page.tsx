@@ -20,6 +20,7 @@ export default function Page() {
       applicants?: number;
       postedOn?: string;
       expiresOn?: string;
+      savedApplicants?:number;
    };
    const [myJobs, setMyJobs] = useState<JobType[]>([]);
    const refresh = useSelector((state: RootState) => state.GeneralSlice.refresh);

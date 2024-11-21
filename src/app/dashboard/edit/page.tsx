@@ -48,7 +48,7 @@ export default function Page() {
    const fetchCompanyDetails = async () => {
       let empId: string = "";
       if (typeof window !== "undefined") {
-         empId = localStorage.getItem("empId") ?? "";
+         empId = localStorage.getItem("uid") ?? "";
       }
       if (empId) {
          let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/employer?empId=" + empId;
