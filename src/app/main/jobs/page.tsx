@@ -14,7 +14,6 @@ import Loading from "react-loading";
 import Image from "next/image";
 import EachJobType from "@/types/EachJobType";
 
-
 export default function Page() {
    return (
       <div className="w-full h-[100vh] flex justify-center items-center">
@@ -23,13 +22,12 @@ export default function Page() {
    );
 }
 
-
-
 const ListOfJobs = () => {
    const [JobData, setJobData] = useState<EachJobType[]>([]);
    let searchResult = useSelector((state: RootState) => state.SearchSlice.results);
    let filterResult = useSelector((state: RootState) => state.SearchSlice.filterResults);
    let jobsLoading = useSelector((state: RootState) => state.SearchSlice.loading);
+   const [showPleaseHandler, setShowPleaseHandler] = useState<boolean>(false);
 
    const dispatch = useDispatch();
    const FetchAllJobs = async () => {
@@ -45,22 +43,23 @@ const ListOfJobs = () => {
    };
 
    useEffect(() => {
-      if (typeof window !== "undefined") {
-         let isSearching = localStorage.getItem("isSearching");
-         if (!isSearching || isSearching !== "yes") {
-            FetchAllJobs();
-         }
-      }
-   }, []);
-
-   useEffect(() => {
       setJobData(searchResult);
+      setShowPleaseHandler(false);
    }, [searchResult]);
 
    useEffect(() => {
       setJobData(filterResult);
+      setShowPleaseHandler(false);
    }, [filterResult]);
 
+   useEffect(() => {
+      if (typeof window !== "undefined") {
+         let isSearching = localStorage.getItem("isSearching");
+         if (!isSearching || isSearching !== "yes") {
+            setShowPleaseHandler(true);
+         }
+      }
+   }, []);
 
    const [open, setOpen] = useState<boolean>(false);
    const showDrawer = () => {
@@ -72,8 +71,15 @@ const ListOfJobs = () => {
 
    return (
       <div className=" flex justify-center items-center overflow-x-hidden relative ">
-         <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh] relative pt-[60px]">
-            <FilterCard />
+         <div
+            className={`hidden md:flex lg:flex flex-col w-[400px] h-[110vh] justify-start py-[5%] items-center relative `}
+         >
+            <div className=" relative ">
+               {showPleaseHandler && (
+                  <div className=" w-full h-full absolute inset-0 z-[100] bg-transparent rounded-xl backdrop-blur-[2px]"></div>
+               )}
+               <FilterCard />
+            </div>
          </div>
          <div
             className=" md:hidden lg:hidden absolute top-[5%] right-2 rotate-90 z-[1]"
@@ -92,6 +98,7 @@ const ListOfJobs = () => {
             <FilterCard />
          </Drawer>
          <div className=" flex flex-col w-[700px] h-[110vh] gap-[20px] overflow-y-scroll p-[10px] pt-[20%] md:pt-[60px] lg:pt-[60px]">
+            {showPleaseHandler && !jobsLoading && <PleaseSearchHandler />}
             {jobsLoading ? (
                <div className=" w-full h-[90%] flex justify-center items-center">
                   <Loading type="spin" color="gray" width={30} height={30} />
@@ -110,12 +117,12 @@ const ListOfJobs = () => {
                         maxSalary={job.maxSalary}
                         location={job.location}
                         skills={job.skills?.split(",").slice(0, 4)}
-                        time={TimeStampToAgo(job.postedOn??"")}
+                        time={TimeStampToAgo(job.postedOn ?? "")}
                      />
                   );
                })
             ) : (
-               <NoJobsHandler />
+               !showPleaseHandler && <NoJobsHandler />
             )}
          </div>
          <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh]"></div>
@@ -132,4 +139,8 @@ const NoJobsHandler = () => {
          <div className="text-[1.2rem]">Sorry! No jobs found</div>
       </div>
    );
+};
+
+const PleaseSearchHandler = () => {
+   return <div>Please Search any keyword to explore Jobs</div>;
 };

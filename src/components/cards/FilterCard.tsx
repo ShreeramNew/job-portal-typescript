@@ -168,7 +168,7 @@ export default function FilterCard() {
    };
 
    return (
-      <div className="w-[100%] lg:w-[300px] h-auto  bg-white border-2 border-gray-100 lg:ml-[60px] lg:mt-[10px] shadow-2xl rounded-xl">
+      <div className="w-[100%] lg:w-[300px] h-auto  bg-white border-2 border-gray-100  shadow-2xl rounded-xl  relative">
          <div className="hidden lg:flex md:flex justify-between items-center p-[20px] border-b- border-gray-800">
             <div className=" flex justify-center items-center gap-[8px]">
                <div>Filters</div>
