@@ -11,7 +11,7 @@ export default function Home() {
          <div>
             <Header />
             <Categories />
-            <TopCompanies />
+            {/* <TopCompanies /> */}
             <SuccessStories />
             <Footer />
          </div>

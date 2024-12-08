@@ -36,6 +36,15 @@ export default function NavBar() {
       uid = localStorage.getItem("uid") ?? "";
    }
 
+   const Logout = async () => {
+      const API = process.env.NEXT_PUBLIC_API + "/api/logout";
+      try {
+         await axios.post(API, {}, { withCredentials: true });
+         router.push("/")
+      } catch (error) {
+         console.log(error);
+      }
+   };
    return (
       <div className="hidden w-full md:flex justify-center items-center gap-[4%] sticky top-0 z-50 bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 p-[20px] text-gray-800 ">
          <div
@@ -60,14 +69,6 @@ export default function NavBar() {
             }}
          >
             Jobs
-         </div>
-         <div
-            className="cursor-pointer hover:underline underline-offset-4"
-            onClick={() => {
-               router.push("/main/jobs");
-            }}
-         >
-            Applies
          </div>
          <Search
             className="w-[300px] z-[21]"
@@ -128,7 +129,10 @@ export default function NavBar() {
                         <CiEdit color="gray" />
                         Edit Profile
                      </div>
-                     <div className=" border-t-2 border-gray-300 mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] pt-1 cursor-pointer ">
+                     <div
+                        className=" border-t-2 border-gray-300 mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] pt-1 cursor-pointer "
+                        onClick={Logout}
+                     >
                         <IoLogOutOutline color="gray" size={18} />
                         Logout
                      </div>

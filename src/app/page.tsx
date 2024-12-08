@@ -2,13 +2,29 @@
 import ReactLoading from "react-loading";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Home() {
    const router = useRouter();
+
+   const CheckAuth = async () => {
+      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user/checkLogedIn";
+      try {
+         let response = await axios.get(API, { withCredentials: true });
+         if (typeof window !== "undefined") {
+            localStorage.setItem("profilePic", response.data.result.profilePic);
+            localStorage.setItem("uid", response.data.result.uid);
+         }
+      } catch (error) {
+         if (typeof window !== "undefined") {
+            localStorage.getItem("profilePic") ? localStorage.removeItem("profilePic") : "";
+            localStorage.getItem("uid") ? localStorage.removeItem("uid") : "";
+         }
+      }
+      router.push("/main/home");
+   };
    useEffect(() => {
-      setTimeout(() => {
-         router.push("/main/home");
-      }, 3000);
+      CheckAuth();
    }, []);
    return (
       <>

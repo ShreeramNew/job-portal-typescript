@@ -422,7 +422,6 @@ const JobHighlight = ({
    const handleApply = async () => {
       let API = process.env.NEXT_PUBLIC_API + "/api/applyForJob";
       try {
-         let authToken = Cookies.get("authToken");
          let uid = "";
          if (typeof window !== undefined) {
             uid = localStorage.getItem("uid") ?? "";

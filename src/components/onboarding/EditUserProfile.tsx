@@ -62,11 +62,15 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
 
    //---------------------If isForEdit, then fetch the saved profile details----
    const FetchProfile = async () => {
-      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user?uid=" + uid;
+      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user";
       try {
-         let response = await axios.get(API);
+         let response = await axios.get(API, { withCredentials: true });
          setProfileData(response.data.user);
       } catch (error) {
+         if (axios.isAxiosError(error)) {
+            message.error(error.response?.data.msg);
+            router.push("/main/home")
+         }
          console.log(error);
       }
       setContenLoading(false);

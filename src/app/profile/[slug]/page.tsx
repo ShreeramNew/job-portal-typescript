@@ -39,7 +39,7 @@ export default function Page() {
    const resumeRef = useRef<HTMLInputElement>(null);
 
    const FetchProfile = async () => {
-      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user?uid=" + slug;
+      let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user/perticularUser?uid=" + slug;
 
       try {
          let response = await axios.get(API);
