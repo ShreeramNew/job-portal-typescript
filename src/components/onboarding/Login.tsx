@@ -42,20 +42,23 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
          }
          success("Login Success!");
          console.log("check");
-         
+
          let isOnboardingRequired = response.data.isOnboardingRequired;
          if (typeof window !== undefined) {
-            let applying = JSON.parse(localStorage.getItem("applying") ?? "");
-            console.log(applying);
-            if (applying && applying.isApplying) {
-               localStorage.setItem(
-                  "applying",
-                  JSON.stringify({
-                     isApplying: false,
-                     jobId: "",
-                  })
-               );
-               return router.push("/main/jobDetail/" + applying.jobId);
+            let applying = localStorage.getItem("applying");
+            if (applying) {
+               let applyingData = JSON.parse(applying ?? "");
+               console.log(applying);
+               if (applyingData && applyingData.isApplying) {
+                  localStorage.setItem(
+                     "applying",
+                     JSON.stringify({
+                        isApplying: false,
+                        jobId: "",
+                     })
+                  );
+                  return router.push("/main/jobDetail/" + applyingData.jobId);
+               }
             }
          }
          if (isEmployer) {
