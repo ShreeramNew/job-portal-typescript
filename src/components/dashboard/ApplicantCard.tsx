@@ -12,7 +12,6 @@ const ApplicantCard = ({
    jobId,
    name,
    bio,
-   profileId,
    profilePic,
    resume,
    isSaved,
@@ -21,7 +20,6 @@ const ApplicantCard = ({
    name?: string;
    jobId?: string;
    bio?: string;
-   profileId?: string;
    profilePic?: string;
    resume?: string;
    isSaved?: boolean;
@@ -81,7 +79,7 @@ const ApplicantCard = ({
          <div className=" absolute bottom-1 flex gap-[4%] md:gap-1 w-full justify-center items-center border- border-red-900 ml-[10%] md:ml-0">
             <div
                className=" border-2 flex justify-center items-center border-blue-600 cursor-pointer rounded-lg px-[4%] py-[2%]"
-               onClick={() => router.push("/profile/" + profileId)}
+               onClick={() => router.push("/profile/" + uid)}
             >
                <IoMdPerson color="gray" /> <span className=" text-gray-700">Profile</span>
             </div>

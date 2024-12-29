@@ -39,12 +39,11 @@ export default function Page() {
             ) : (
                applicants.map((applicant) => (
                   <ApplicantCard
-                     key={applicant.profileId}
+                     key={applicant.uid}
                      uid={applicant.uid}
                      jobId={Array.isArray(slug)?slug[0]:slug}
                      name={applicant.username}
                      bio={applicant.bio}
-                     profileId={applicant.profileId}
                      profilePic={applicant.profile}
                      resume={applicant.resume}
                      isSaved={true}
