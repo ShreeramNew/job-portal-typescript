@@ -47,7 +47,7 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
    const [haveExperience, setHaveExperience] = useState<boolean>(false);
    const [contentLoading, setContenLoading] = useState<boolean>(true);
    const [profilePicURL, setProfilePicURL] = useState<string>(
-      "https://cdn.pixabay.com/photo/2012/03/04/00/36/baby-21971_1280.jpg"
+      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
    );
    const [loading, setLoading] = useState({
       submitLoading: false,

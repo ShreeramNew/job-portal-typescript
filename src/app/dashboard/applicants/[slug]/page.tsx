@@ -45,7 +45,6 @@ export default function Page() {
                      jobId={Array.isArray(slug)?slug[0]:slug}
                      name={applicant.username}
                      bio={applicant.bio}
-                     profileId={applicant.profileId}
                      profilePic={applicant.profile}
                      resume={applicant.resume}
                      isSaved={applicant.isSaved}

@@ -8,7 +8,9 @@ import { FaWindowRestore } from "react-icons/fa6";
 import { CiEdit } from "react-icons/ci";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-export default function LeftNavbar({ForDrawer}:{ForDrawer:boolean}) {
+import { PiBuilding } from "react-icons/pi";
+
+export default function LeftNavbar({ ForDrawer }: { ForDrawer: boolean }) {
    let title = "Stark Industries";
    let headQuarters = "Banglore, India";
    let router = useRouter();
@@ -40,17 +42,15 @@ export default function LeftNavbar({ForDrawer}:{ForDrawer:boolean}) {
       }
    };
    return (
-      <div className={` ${ForDrawer?"block":"hidden"} md:block md:w-[32%] lg:w-[19%]  h-screen border-r-2 border-gray-400`}>
+      <div
+         className={` ${
+            ForDrawer ? "block" : "hidden"
+         } md:block md:w-[32%] lg:w-[19%]  h-screen border-r-2 border-gray-400`}
+      >
          <div className=" flex justify-center items-center p-[10px] gap-[6%]">
-            <div className="border-2 border-gray-400 h-[80px] w-[80px] rounded-[100%] relative">
-               <div className=" w-full h-full overflow-hidden rounded-[100%]">
-                  <Image
-                     src="https://cdn.pixabay.com/photo/2012/03/04/00/36/baby-21971_1280.jpg"
-                     alt="profile"
-                     width={200}
-                     height={200}
-                     objectFit="cover"
-                  />
+            <div className="border border-gray-400 h-[80px] w-[80px] rounded-[100%] relative">
+               <div className=" w-full h-full overflow-hidden rounded-[100%] flex justify-center items-center">
+                  <PiBuilding size={50} />
                </div>
             </div>
             <div>
@@ -60,31 +60,46 @@ export default function LeftNavbar({ForDrawer}:{ForDrawer:boolean}) {
          </div>
 
          <div className=" flex flex-col justify-center items-center">
-            <div className={StyleOfEachTab+`${active == 1 ? " bg-gray-200" : ""}`} onClick={() => handleTabClick(1)}>
+            <div
+               className={StyleOfEachTab + `${active == 1 ? " bg-gray-200" : ""}`}
+               onClick={() => handleTabClick(1)}
+            >
                <PiSuitcaseSimple size={25} color={active == 1 ? "black" : "gray"} />
                <div className={`text-[0.8rem] text-gray-900 ${active == 1 ? "font-bold" : ""} `}>
                   My Jobs
                </div>
             </div>
-            <div className={StyleOfEachTab+`${active == 2 ? " bg-gray-200" : ""}`} onClick={() => handleTabClick(2)}>
+            <div
+               className={StyleOfEachTab + `${active == 2 ? " bg-gray-200" : ""}`}
+               onClick={() => handleTabClick(2)}
+            >
                <FaRegFileAlt size={23} color={active == 2 ? "black" : "gray"} />
                <div className={`text-[0.8rem] text-gray-900 ${active == 2 ? "font-bold" : ""} `}>
                   Applicants
                </div>
             </div>{" "}
-            <div className={StyleOfEachTab+`${active == 3 ? " bg-gray-200" : ""}`} onClick={() => handleTabClick(3)}>
+            <div
+               className={StyleOfEachTab + `${active == 3 ? " bg-gray-200" : ""}`}
+               onClick={() => handleTabClick(3)}
+            >
                <CiSquarePlus size={25} color={active == 3 ? "black" : "gray"} />
                <div className={`text-[0.8rem] text-gray-900 ${active == 3 ? "font-bold" : ""} `}>
                   Post Job
                </div>
             </div>
-            <div className={StyleOfEachTab+`${active == 4 ? " bg-gray-200" : ""}`} onClick={() => handleTabClick(4)}>
+            <div
+               className={StyleOfEachTab + `${active == 4 ? " bg-gray-200" : ""}`}
+               onClick={() => handleTabClick(4)}
+            >
                <FaWindowRestore size={22} color={active == 4 ? "black" : "gray"} />
                <div className={`text-[0.8rem] text-gray-900 ${active == 4 ? "font-bold" : ""} `}>
                   Saved
                </div>
             </div>
-            <div className={StyleOfEachTab+`${active == 5 ? " bg-gray-200" : ""}`} onClick={() => handleTabClick(5)}>
+            <div
+               className={StyleOfEachTab + `${active == 5 ? " bg-gray-200" : ""}`}
+               onClick={() => handleTabClick(5)}
+            >
                <CiEdit size={23} color={active == 5 ? "black" : "gray"} />
                <div className={`text-[0.8rem] text-gray-900 ${active == 5 ? "font-bold" : ""} `}>
                   Edit Profile
