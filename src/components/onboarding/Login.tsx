@@ -41,6 +41,8 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
             localStorage.setItem("profilePic", response.data.profilePic);
          }
          success("Login Success!");
+         console.log("check");
+         
          let isOnboardingRequired = response.data.isOnboardingRequired;
          if (typeof window !== undefined) {
             let applying = JSON.parse(localStorage.getItem("applying") ?? "");
