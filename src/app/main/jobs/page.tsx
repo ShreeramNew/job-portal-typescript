@@ -105,7 +105,15 @@ const ListOfJobs = () => {
                </div>
             ) : JobData.length > 0 ? (
                JobData.map((job) => {
-                  return (
+                  let showJob = true;
+                  let postedOn = TimeStampToAgo(job.postedOn ?? "");
+                  if (postedOn.includes("d")) {
+                     let days = postedOn.substring(0, postedOn.indexOf("d"));
+                     if (parseInt(days)>60) {
+                        showJob = false;
+                     }
+                  }
+                  return showJob ? (
                      <JobPostCard
                         key={job._id}
                         id={job._id}
@@ -119,7 +127,7 @@ const ListOfJobs = () => {
                         skills={job.skills?.split(",").slice(0, 4)}
                         time={TimeStampToAgo(job.postedOn ?? "")}
                      />
-                  );
+                  ) : null;
                })
             ) : (
                !showPleaseHandler && <NoJobsHandler />
