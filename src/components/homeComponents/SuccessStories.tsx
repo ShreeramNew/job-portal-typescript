@@ -32,7 +32,7 @@ export default function SuccessStories() {
    ];
 
    return (
-      <div className=" w-full flex flex-col justify-center items-center mt-[15rem] ">
+      <div className=" w-full flex flex-col justify-center items-center md:mt-[21rem] ">
          <h2 className=" m-[20px] mt-[70px] text-[23px]">Success Stories</h2>
          <div className="grid grid-cols-1 md:grid-cols-3 md:gap-[50px]">
             {stories.map((story) => {

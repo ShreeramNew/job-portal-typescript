@@ -107,12 +107,12 @@ const ListOfJobs = () => {
                JobData.map((job) => {
                   let showJob = true;
                   let postedOn = TimeStampToAgo(job.postedOn ?? "");
-                  if (postedOn.includes("d")) {
-                     let days = postedOn.substring(0, postedOn.indexOf("d"));
-                     if (parseInt(days)>60) {
-                        showJob = false;
-                     }
-                  }
+                  // if (postedOn.includes("d")) {
+                  //    let days = postedOn.substring(0, postedOn.indexOf("d"));
+                  //    // if (parseInt(days)>60) {
+                  //    //    showJob = false;
+                  //    // }
+                  // }
                   return showJob ? (
                      <JobPostCard
                         key={job._id}

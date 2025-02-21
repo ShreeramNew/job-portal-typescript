@@ -11,7 +11,7 @@ export default function CategoryCard({ imageLink, category, SearchKeywords }: pr
    const SearchText = useSearchText();
    return (
       <div
-         className="flex-shrink-0 bg-white w-[230px] h-[250px] rounded-md flex flex-col justify-center hover:scale-[1.02] overflow-hidden shadow-2xl cursor-pointer"
+         className="flex-shrink-0 bg-white w-[230px] h-[250px] rounded-md flex flex-col justify-center hover:scale-[1.02] overflow-hidden shadow-md cursor-pointer"
          onClick={() => SearchText(SearchKeywords)}
       >
          <div className=" w-[40vh] h-[45vh] mb-[20px]">
