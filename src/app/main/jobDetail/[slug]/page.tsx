@@ -182,13 +182,13 @@ export default function Page() {
          {isError ? (
             <div className=" w-full h-[90vh] flex justify-center items-center">Error</div>
          ) : (
-            <div className="w-screen h-[89vh] grid grid-cols-1  md:grid-cols-12  overflow-x-hidden">
+            <div className="w-screen h-[89vh] md:h-screen border- border-red-900 grid grid-cols-1  md:grid-cols-12  overflow-x-hidden">
                {contentLoading.jobsLoading ? (
                   <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto flex justify-center items-center">
                      <ReactLoading type="spin" width={40} height={40} color="gray" />
                   </div>
                ) : (
-                  <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto">
+                  <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto md:pt-[8rem]">
                      <div className="border- w-full border-yellow-600 h-[40%] md:h-[35%] lg:h-[35%]">
                         <JobHighlight
                            key={JobData.id}
@@ -314,7 +314,7 @@ export default function Page() {
                   </div>
                )}
 
-               <div className="md:col-span-5 md:overflow-y-scroll flex flex-col gap-[10px] p-[10px] bg-gray-200">
+               <div className="md:col-span-5 md:overflow-y-scroll flex flex-col gap-[10px] p-[10px] bg-gray-200 md:pt-[8rem]">
                   <div className=" text-gray-800 font-bold">Similar Jobs</div>
                   {SimilarJobs.map((job) => {
                      return (
@@ -457,7 +457,7 @@ const JobHighlight = ({
    };
 
    return (
-      <div className=" w-full h-full rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
+      <div className=" w-full h-full  rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />

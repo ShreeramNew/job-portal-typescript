@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Header() {
    const router = useRouter();
    return (
-      <div className="w-full bg-gradient-to-br from-gray-900 via-gray-700 md:via-gray-800 to-gray-900 md:to-gray-900  h-[60vh] gap-[20px] p-[50px] flex justify-center items-center   md:py-[4rem] md:h-auto ">
+      <div className="w-full bg-gradient-to-br from-gray-900 via-gray-700 md:via-gray-800 to-gray-900 md:to-gray-900  h-[60vh] gap-[20px] p-[50px] flex justify-center items-center   md:py-[4rem] md:h-auto md:pt-[10rem] ">
          <div className=" lg:max-w-[78rem] md:mx-auto flex  border- border-red-900 gap-[6rem]">
             <div className="md:flex md:flex-col justify-center   relative mt-[1rem]  md:mt-0 border- border-red-900 lg:max-w-[76rem] lg:mx-auto  ">
                <h1 className=" border- border-red-900 z-[3] text-white text-[1.7rem] md:text-[3rem] absolute top-[-15vh] right-[0] lg:relative md:top-[0%] ">

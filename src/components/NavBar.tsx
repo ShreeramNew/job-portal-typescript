@@ -26,9 +26,15 @@ export default function NavBar() {
    const SearchText = useSearchText();
    const { scrollYProgress } = useScroll();
 
-   const width = useTransform(scrollYProgress, [0, 0.4], ["90%", "100%"]);
-   const top = useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"]);
-   const borderRadius = useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"]);
+   const width = PathName.includes("/main/home")
+      ? useTransform(scrollYProgress, [0, 0.4], ["90%", "100%"])
+      : "100%";
+   const top = PathName.includes("/main/home")
+      ? useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"])
+      : "0rem";
+   const borderRadius = PathName.includes("/main/home")
+      ? useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"])
+      : "0";
 
    const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
       SearchText(value);

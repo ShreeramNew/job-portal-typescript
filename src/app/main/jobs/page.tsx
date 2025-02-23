@@ -70,7 +70,7 @@ const ListOfJobs = () => {
    };
 
    return (
-      <div className=" flex justify-center items-center overflow-x-hidden relative ">
+      <div className=" flex justify-center items-center overflow-x-hidden relative md:pt-[10rem] ">
          <div
             className={`hidden md:flex lg:flex flex-col w-[400px] h-[110vh] justify-start py-[5%] items-center relative `}
          >
