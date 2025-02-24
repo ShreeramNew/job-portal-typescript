@@ -19,26 +19,20 @@ import { div } from "framer-motion/m";
 
 export default function NavBar() {
    type SearchProps = GetProps<typeof Input.Search>;
-   const dispatch = useDispatch();
    const PathName = usePathname();
    const router = useRouter();
    const [searchText, setSearchText] = useState<string>("");
    const SearchText = useSearchText();
    const { scrollYProgress } = useScroll();
 
-   const width = PathName.includes("/main/home")
-      ? useTransform(scrollYProgress, [0, 0.4], ["90%", "100%"])
-      : "100%";
-   const top = PathName.includes("/main/home")
-      ? useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"])
-      : "0rem";
-   const borderRadius = PathName.includes("/main/home")
-      ? useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"])
-      : "0";
+   const width = useTransform(scrollYProgress, [0, 0.4], ["90%", "100%"]);
+   const top = useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"]);
+   const borderRadius = useTransform(scrollYProgress, [0, 0.4], ["1rem", "0rem"]);
 
    const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
       SearchText(value);
    };
+
    const [openMenu, setOpenMenu] = useState<boolean>(false);
    let ProfilePicURL: string = "";
    let uid: string = "";
@@ -64,8 +58,12 @@ export default function NavBar() {
    return (
       <div className=" flex justify-center items-center fixed w-full top-0 z-[100]">
          <motion.div
-            style={{ width, top, borderRadius }}
-            className="hidden md:flex justify-center items-center gap-[4%] relative z-[100] p-[20px] text-gray-800 overflow-hidden backdrop-blur-sm "
+            style={{
+               width: PathName.includes("/main/home") ? width : "100%",
+               top: PathName.includes("/main/home") ? top : "0rem",
+               borderRadius: PathName.includes("/main/home") ? borderRadius : "0",
+            }}
+            className="hidden md:flex h-[5rem] justify-center items-center gap-[4%] relative z-[100] p-[20px] text-gray-800 overflow-hidden backdrop-blur-sm "
          >
             <div className=" bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 opacity-[0.8] absolute w-full h-full inset-0 z-[-1] backdrop-blur-sm  "></div>
             <div
