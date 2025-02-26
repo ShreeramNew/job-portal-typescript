@@ -3,6 +3,8 @@ import ReactLoading from "react-loading";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import loadingWork from "../../public/loadingWork.svg";
+import Image from "next/image";
 
 export default function Home() {
    const router = useRouter();
@@ -28,8 +30,18 @@ export default function Home() {
    }, []);
    return (
       <>
-         <div className="w-full h-[100vh] bg-gray-400 flex justify-center items-center">
-            <ReactLoading type="spin" height={50} width={50} color="blue" />
+         <div className="w-full h-[100vh] bg-white flex justify-center items-center">
+            <div className=" flex flex-col justify-center items-center gap-3 relative w-[200px] h-[200px]">
+               <Image
+                  src={loadingWork}
+                  alt="loading"
+                  width={200}
+                  height={200}
+                  className=" w-[200px] h-[200px] absolute z-[0] bottom-[-1rem] left-0"
+               />
+
+               <ReactLoading type="spin" height={20} width={20} color="blue" />
+            </div>
          </div>
       </>
    );
