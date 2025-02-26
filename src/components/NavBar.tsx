@@ -1,5 +1,5 @@
 "use client";
-import { Input, message, Space } from "antd";
+import { Input, message, Space, Dropdown } from "antd";
 const { Search } = Input;
 import { GoArrowUpRight } from "react-icons/go";
 import { usePathname, useRouter } from "next/navigation";
@@ -55,6 +55,46 @@ export default function NavBar() {
          console.log(error);
       }
    };
+
+   //Related to dropdown, that opens on clicking profile pic
+   const items = [
+      {
+         key: "1",
+         label: (
+            <div
+               className=" cursor-pointer flex gap-1 justify-center items-center h-[2rem] "
+               onClick={() => router.push("/profile/" + uid)}
+            >
+               <IoMdPerson color="gray" />
+               <span>My Profile</span>
+            </div>
+         ),
+      },
+      {
+         key: "2",
+         label: (
+            <div
+               className="cursor-pointer flex gap-1 justify-center items-center h-[2rem]"
+               onClick={() => router.push("/editUserProfile")}
+            >
+               <CiEdit color="gray" />
+               <span>Edit Profile</span>
+            </div>
+         ),
+      },
+      {
+         key: "3",
+         label: (
+            <div
+               className=" flex gap-1 justify-center items-center  pt-1 cursor-pointer h-[2rem] "
+               onClick={Logout}
+            >
+               <IoLogOutOutline color="gray" size={18} />
+               Logout
+            </div>
+         ),
+      },
+   ];
    return (
       <div className=" flex justify-center items-center fixed w-full top-0 z-[100]">
          <motion.div
@@ -63,9 +103,14 @@ export default function NavBar() {
                top: PathName.includes("/main/home") ? top : "0rem",
                borderRadius: PathName.includes("/main/home") ? borderRadius : "0",
             }}
-            className="hidden md:flex h-[5rem] justify-center items-center gap-[4%] relative z-[100] p-[20px] text-gray-800 overflow-hidden backdrop-blur-sm "
+            className="hidden md:flex h-[5rem] justify-center items-center gap-[4%] relative z-[100] p-[20px] text-gray-800 backdrop-blur-sm "
          >
-            <div className=" bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 opacity-[0.8] absolute w-full h-full inset-0 z-[-1] backdrop-blur-sm  "></div>
+            <motion.div
+               style={{
+                  borderRadius: PathName.includes("/main/home") ? borderRadius : "0",
+               }}
+               className=" bg-gradient-to-br from-gray-400 via-gray-200 to-gray-400 opacity-[0.8] absolute w-full h-full inset-0 z-[-1] backdrop-blur-sm"
+            ></motion.div>
             <div
                className=" absolutes lg:left-[10%] md:left-[0] scale-[0.8] lg:scale-[1]  z-[60] cursor-pointer"
                onClick={() => router.push("/main/home")}
@@ -117,46 +162,22 @@ export default function NavBar() {
                </>
             ) : (
                <div className=" border- border-red-900 w-[40%]  h-[7.5vh] absolute right-6 z-[20]">
-                  <div
-                     className=" bg-gray-100 w-[50px] h-[50px] rounded-full absolute right-0 cursor-pointer overflow-hidden fle"
-                     onClick={() => setOpenMenu((prev) => !prev)}
+                  <Dropdown
+                     overlayStyle={{ width: "9rem", borderRadius: "1rem", overflow: "hidden" }}
+                     overlayClassName=" !shadow-[0px_0px_1px_0px]"
+                     menu={{ items }}
+                     trigger={["click"]}
                   >
-                     {ProfilePicURL !== "" ? (
-                        <Image src={ProfilePicURL} alt="profile" width={100} height={100} />
-                     ) : (
-                        <div className="w-full h-full flex justify-center items-center ">
-                           <IoMdPerson color="gray" size={36} />
-                        </div>
-                     )}
-                  </div>
-                  {openMenu && (
-                     <div className="absolute right-0 bottom-[-250%] bg-white rounded-lg py-[2%] w-[20%] ">
-                        <div className=" absolute right-2 top-[-8%]">
-                           <IoTriangle color="white" />
-                        </div>
-                        <div
-                           className=" cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] "
-                           onClick={() => router.push("/profile/" + uid)}
-                        >
-                           <IoMdPerson color="gray" />
-                           My Profile
-                        </div>
-                        <div
-                           className="cursor-pointer mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%]"
-                           onClick={() => router.push("/editUserProfile")}
-                        >
-                           <CiEdit color="gray" />
-                           Edit Profile
-                        </div>
-                        <div
-                           className=" border-t-2 border-gray-300 mt-2 flex gap-1 justify-center items-center hover:bg-gray-200 px-[2%] py-[1%] pt-1 cursor-pointer "
-                           onClick={Logout}
-                        >
-                           <IoLogOutOutline color="gray" size={18} />
-                           Logout
-                        </div>
+                     <div className=" bg-gray-100 w-[50px] h-[50px] rounded-full absolute right-0 cursor-pointer overflow-hidden fle">
+                        {ProfilePicURL !== "" ? (
+                           <Image src={ProfilePicURL} alt="profile" width={100} height={100} />
+                        ) : (
+                           <div className="w-full h-full flex justify-center items-center ">
+                              <IoMdPerson color="gray" size={36} />
+                           </div>
+                        )}
                      </div>
-                  )}
+                  </Dropdown>
                </div>
             )}
          </motion.div>
