@@ -12,7 +12,7 @@ export default function Home() {
             <Header />
             <Categories />
             {/* <TopCompanies /> */}
-            <SuccessStories />
+            {/* <SuccessStories /> */}
             <Footer />
          </div>
       </>
