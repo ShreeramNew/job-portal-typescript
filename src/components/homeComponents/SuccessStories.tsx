@@ -1,9 +1,15 @@
 "use client";
 import Image from "next/image";
 import { v4 as uuid } from "uuid";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { FaAngleRight } from "react-icons/fa6";
+import { FaAngleLeft } from "react-icons/fa6";
+
 export default function SuccessStories() {
    let stories = [
       {
+         id: 0,
          name: "Amy Johnson",
          position: "Marketing Manager",
          company: "BrightMedia",
@@ -13,6 +19,7 @@ export default function SuccessStories() {
       },
 
       {
+         id: 1,
          name: "Mark Peterson",
          position: "Software Engineer",
          company: "TechWave",
@@ -22,6 +29,7 @@ export default function SuccessStories() {
       },
 
       {
+         id: 2,
          name: "Sarah Lee",
          position: "Product Manager",
          company: "InnovateX",
@@ -31,22 +39,93 @@ export default function SuccessStories() {
       },
    ];
 
+   type storiesType = {
+      id: number;
+      name: string;
+      position: string;
+      company: string;
+      imageURL: string;
+      story: string;
+   };
+
+   const [activeData, setActiveData] = useState<storiesType>(stories[0]);
+
+   const setNext = () => {
+      if (activeData.id < 2) {
+         setActiveData(stories[activeData.id + 1]);
+      } else {
+         setActiveData(stories[0]);
+      }
+   };
+
+   const setPrev = () => {
+      if (activeData.id > 0) {
+         setActiveData(stories[activeData.id - 1]);
+      } else {
+         setActiveData(stories[2]);
+      }
+   };
+
    return (
-      <div className=" w-full flex flex-col justify-center items-center md:mt-[21rem] ">
-         <h2 className=" m-[20px] mt-[70px] text-[23px]">Success Stories</h2>
-         <div className="grid grid-cols-1 md:grid-cols-3 md:gap-[50px]">
-            {stories.map((story) => {
-               return (
-                  <SuccessCard
-                     key={uuid()}
-                     fullName={story.name}
-                     position={story.position}
-                     company={story.company}
-                     story={story.story}
-                     imageURL={story.imageURL}
-                  />
-               );
-            })}
+      <div className=" w-full flex flex-col justify-center items-center md:mt-[2rem] bg-gray-400 py-[6rem] ">
+         <div className=" flex flex-col md:flex-row gap-[3rem] max-w-[23rem] lg:max-w-[78rem] border-  ">
+            <div className=" flex-shrink-0 md:w-[25rem] text-center md:text-left">
+               <div className=" text-gray-200 ">TESTIMONIALS</div>
+               <div className=" text-gray-100 text-[2rem] font-semibold">
+                  Feedback from Job Seekers
+               </div>
+            </div>
+            <motion.div className=" flex flex-col gap-5 justify-between items-start border- min-h-[40rem]  md:min-h-[20rem] border-">
+               <motion.div
+                  initial={{ opacity: 0.4 }}
+                  animate={{ opacity: 1 }}
+                  key={activeData.id}
+                  transition={{ duration: 1 }}
+                  className="text-gray-50 font-semibold text-[1.5rem]"
+               >
+                  "{activeData.story}"
+               </motion.div>
+               <div className=" flex flex-col gap-[1rem] md:gap-0 md:flex-row justify-between items-center w-full">
+                  <motion.div
+                     initial={{ opacity: 0.4 }}
+                     animate={{ opacity: 1 }}
+                     key={activeData.id}
+                     transition={{ duration: 1 }}
+                     className=" flex justify-start items-center gap-7"
+                  >
+                     <div className=" w-[70px] h-[70px] rounded-full overflow-hidden relative">
+                        <Image
+                           src={activeData.imageURL}
+                           alt={activeData.name}
+                           fill
+                           className=" w-full h-full object-cover"
+                        />
+                     </div>
+                     <div className=" flex flex-col justify-start items-start">
+                        <div className=" text-gray-800 font-semibold text-[1.2rem]">
+                           {activeData.name}
+                        </div>
+                        <div className=" text-gray-700">
+                           {activeData.position} @ {activeData.company}
+                        </div>
+                     </div>
+                  </motion.div>
+                  <div className=" flex w-fit gap-4 justify-center items-center">
+                     <div
+                        onClick={setPrev}
+                        className={`flex justify-center items-center w-[50px] h-[50px] bg-white cursor-pointer rounded-full text-gray-700`}
+                     >
+                        <FaAngleLeft size={25} />
+                     </div>
+                     <div
+                        onClick={setNext}
+                        className={`flex justify-center items-center w-[50px] h-[50px] bg-white cursor-pointer rounded-full text-gray-700`}
+                     >
+                        <FaAngleRight size={25} />
+                     </div>
+                  </div>
+               </div>
+            </motion.div>
          </div>
       </div>
    );
