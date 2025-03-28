@@ -94,7 +94,7 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
                   autoComplete="on"
                   className=" border- border-green-900 h-full !w-full flex justify-start items-center flex-col relative"
                >
-                  <div className=" py-[3rem]">
+                  <div className=" py-[3rem] cursor-pointer" onClick={()=>router.push("/main/home")}>
                      <Image alt="logo" src={logo} className=" w-[200px] h-full" />
                   </div>
 
@@ -105,10 +105,11 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
                      </div>
                   </div>
 
+                  <div className=" mb-1 text-gray-700 text-[1.05rem] mt-[4rem] md:mt-[2rem] w-full">Email:</div>
                   <Form.Item<FieldType>
                      name="email"
                      rules={[{ required: true, message: "Please enter a valid email!" }]}
-                     className="w-full m-0 py-[3rem] md:py-[2rem] mt-[4rem] md:mt-[2rem]"
+                     className="w-full m-0 "
                   >
                      <Input
                         type="email"
@@ -117,6 +118,7 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
                      />
                   </Form.Item>
 
+                  <div className=" mb-1 text-gray-700 text-[1.05rem] w-full mt-[2rem]">Password:</div>
                   <Form.Item<FieldType>
                      name="password"
                      rules={[{ required: true, message: "Please input your password!" }]}

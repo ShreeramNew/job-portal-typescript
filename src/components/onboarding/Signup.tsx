@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button, message, Form, Input } from "antd";
 import type { FormProps } from "antd";
 import axios from "axios";
+import Image from "next/image";
+import loginPic from "../../../public/loginPic.jpg";
+import logo from "../../../public/logo-no-background.svg";
 
 export default function Signup({ isEmployer }: { isEmployer: boolean }) {
    const [messageApi, contextHolder] = message.useMessage();
@@ -78,73 +81,96 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
       console.log("Failed:", errorInfo);
    };
    return (
-      <div className="w-full h-[100vh] border- border-red-800 flex justify-center items-center">
+      <div className="w-full h-[100vh] border- border-red-800 flex justify-start items-start">
          {contextHolder}
-         <div className=" border-blue-900 border- w-[93%] md:w-[26%] h-[60%] rounded-lg shadow-blue-600 shadow-xl bg-gradient-to-br from-gray-400 via-gray-200 to-gray-300">
-            <Form
-               name="basic"
-               onFinish={onFinish}
-               onFinishFailed={onFinishFailed}
-               autoComplete="on"
-               className=" border- border-green-900 h-full !w-full flex justify-center items-center flex-col gap-[30px] rounded-lg"
-            >
-               <h2 className=" text-blue-600 font-bold text-[2rem] md:text-2xl">SignUp</h2>
-
-               <Form.Item<FieldType>
-                  name="email"
-                  rules={[{ required: true, message: "Please enter a valid email!" }]}
-                  className="w-[83%] md:w-[70%] m-0 h-[10%]"
+         <div className=" w-full flex-shrink-0 md:w-[30rem] flex flex-col justify-start items-center h-screen ">
+            <div className="border-blue-900 border- w-full h-full px-[1rem] md:px-[3rem]">
+               <Form
+                  name="basic"
+                  onFinish={onFinish}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="on"
+                  className=" border- border-green-900 h-full !w-full flex justify-start items-center flex-col relative"
                >
-                  <Input
-                     type="email"
-                     className=" border-b-2 border-blue-900 rounded-md px-[10px] py-[2px]  outline-none  h-[40px] md:h-[35px]"
-                     placeholder="Enter your email"
-                  />
-               </Form.Item>
-
-               <Form.Item<FieldType>
-                  name="password"
-                  rules={[{ required: true, message: "Please input your password!" }]}
-                  className="w-[83%] md:w-[70%] m-0 h-[10%]"
-               >
-                  <Input.Password
-                     className=" border-b-2 border-blue-900 rounded-md px-[10px] py-[2px] outline-none  h-[40px] md:h-[35px]"
-                     placeholder="Enter password"
-                  />
-               </Form.Item>
-
-               <Form.Item<FieldType>
-                  name="confirm"
-                  rules={[{ required: true, message: "Please confirm password!" }]}
-                  className="w-[83%] md:w-[70%] m-0 h-[10%]"
-               >
-                  <Input.Password
-                     className=" border-b-2 border-blue-900 rounded-md px-[10px] py-[2px] outline-none h-[40px] md:h-[35px]"
-                     placeholder="Confirm password"
-                  />
-               </Form.Item>
-
-               <Form.Item className="w-[70%] m-0">
-                  <Button
-                     htmlType="submit"
-                     loading={loading}
-                     className=" bg-blue-500 hover:!bg-blue-600 py-[5px] text-xl rounded-md w-full !text-white hover:!text-white"
+                  <div
+                     className=" py-[3rem] cursor-pointer"
+                     onClick={() => router.push("/main/home")}
                   >
-                     SignUp
-                  </Button>
-               </Form.Item>
-               <p className="text-[1rem]">
-                  Already have an account?
-                  <span
-                     className=" text-blue-900 hover:underline cursor-pointer"
-                     onClick={() =>
-                        isEmployer ? router.push("/login/employer") : router.push("/login")
-                     }
+                     <Image alt="logo" src={logo} className=" w-[200px] h-full" />
+                  </div>
+
+                  <div className=" flex flex-col justify-start items-start w-full">
+                     <div className=" text-[2rem] font-semibold text-blue-500">Welcome!</div>
+                     <div className=" text-[1.1rem] text-gray-700">
+                        Set your email and password to get started
+                     </div>
+                  </div>
+
+                  <div className=" mb-1 text-gray-700 w-full text-[1.05rem] mt-[4rem] md:mt-[1rem] md:pt-[1rem]">Email:</div>
+                  <Form.Item<FieldType>
+                     name="email"
+                     rules={[{ required: true, message: "Please enter a valid email!" }]}
+                     className="w-full m-0 "
                   >
-                     login
-                  </span>
-               </p>
-            </Form>
+                     <Input
+                        type="email"
+                        className=" !border-b-2 border-blue-900 focus:!border-blue-900 focus:!shadow-none hover:!border-blue-900 rounded-md px-[10px] py-[2px] !outline-none h-[3rem] md:h-[2.4rem]"
+                        placeholder="Email"
+                     />
+                  </Form.Item>
+
+                  <div className=" mb-1 text-gray-700 text-[1.05rem] w-full mt-[2rem]">Password:</div>
+                  <Form.Item<FieldType>
+                     name="password"
+                     rules={[{ required: true, message: "Please input your password!" }]}
+                     className="w-full m-0"
+                  >
+                     <Input.Password
+                        className=" !border-b-2 border-blue-900 focus:!border-blue-900 focus:!shadow-none hover:!border-blue-900 rounded-md px-[10px] py-[2px] !outline-none h-[3rem] md:h-[2.4rem]"
+                        placeholder="Password"
+                     />
+                  </Form.Item>
+
+                  <div className=" mb-1 text-gray-700 text-[1.05rem] mt-[2rem] w-full">Confirm Password:</div>
+
+                  <Form.Item<FieldType>
+                     name="confirm"
+                     rules={[{ required: true, message: "Please confirm password!" }]}
+                     className="w-full m-0"
+                  >
+                     <Input.Password
+                        className=" !border-b-2 border-blue-900 focus:!border-blue-900 focus:!shadow-none hover:!border-blue-900 rounded-md px-[10px] py-[2px] !outline-none h-[3rem] md:h-[2.4rem]"
+                        placeholder="Confirm Password"
+                     />
+                  </Form.Item>
+
+                  <div className=" h-fit w-full absolute bottom-[3rem]">
+                     <Form.Item className="w-full m-0">
+                        <Button
+                           htmlType="submit"
+                           loading={loading}
+                           className=" bg-blue-500 hover:!bg-blue-600 h-[3rem] rounded-[10rem] w-full flex justify-center items-center text-xl !text-white hover:!text-white"
+                        >
+                           SignUp
+                        </Button>
+                     </Form.Item>
+                     <p className="text-[1rem] mt-3 ml-3">
+                        Already have an account?
+                        <span
+                           className=" text-blue-900 hover:underline underline-offset-2 cursor-pointer"
+                           onClick={() =>
+                              isEmployer ? router.push("/login/employer") : router.push("/login")
+                           }
+                        >
+                           login
+                        </span>
+                     </p>
+                  </div>
+               </Form>
+            </div>
+         </div>
+         <div className=" w-full h-screen relative ">
+            <Image src={loginPic} alt="Login Image" fill className=" w-full h-full object-cover" />
          </div>
       </div>
    );
