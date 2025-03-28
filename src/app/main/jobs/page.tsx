@@ -70,9 +70,9 @@ const ListOfJobs = () => {
    };
 
    return (
-      <div className=" flex justify-center items-center overflow-x-hidden relative md:pt-[10rem] ">
+      <div className=" flex justify-center items-center overflow-x-hidden relative border- border-pink-700 ">
          <div
-            className={`hidden md:flex lg:flex flex-col w-[400px] h-[110vh] justify-start py-[5%] items-center relative `}
+            className={`hidden md:flex lg:flex flex-col w-[35rem] h-full border- border-red-900 justify-start items-center relative `}
          >
             <div className=" relative ">
                {showPleaseHandler && (
@@ -97,7 +97,7 @@ const ListOfJobs = () => {
          >
             <FilterCard />
          </Drawer>
-         <div className=" flex flex-col w-[700px] h-[110vh] gap-[20px] overflow-y-scroll p-[10px] pt-[20%] md:pt-[60px] lg:pt-[60px]">
+         <div className=" flex flex-col w-[43.75rem] h-[100vh] gap-[20px] overflow-y-scroll p-[10px] pt-[20%] border- border-blue-900 md:py-[6rem]">
             {showPleaseHandler && !jobsLoading && <PleaseSearchHandler />}
             {jobsLoading ? (
                <div className=" w-full h-[90%] flex justify-center items-center">
@@ -133,7 +133,7 @@ const ListOfJobs = () => {
                !showPleaseHandler && <NoJobsHandler />
             )}
          </div>
-         <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[110vh]"></div>
+         <div className=" hidden md:flex lg:flex flex-col w-[400px] h-[100vh]"></div>
       </div>
    );
 };
@@ -150,5 +150,12 @@ const NoJobsHandler = () => {
 };
 
 const PleaseSearchHandler = () => {
-   return <div>Please Search any keyword to explore Jobs</div>;
+   return (
+      <div className=" w-full h-full flex flex-col gap-2 justify-center items-center">
+         <div>
+            <Image src="/nojobs.svg" alt="nojob" width={100} height={100} />
+         </div>
+         <div className="text-[1.2rem]">Please search any keyword to explore jobs!</div>
+      </div>
+   );
 };

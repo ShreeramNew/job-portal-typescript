@@ -29,9 +29,12 @@ export default function JobPostCard({
    skills,
    time,
 }: PropsType) {
-   const router=useRouter();
+   const router = useRouter();
    return (
-      <div className=" w-full min-h-[186px] md:min-h-[166px] rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer " onClick={()=>router.push("/main/jobDetail/"+id)}>
+      <div
+         className=" w-full min-h-[186px] md:min-h-[166px] rounded-lg border-[1px] border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-sm cursor-pointer "
+         onClick={() => router.push("/main/jobDetail/" + id)}
+      >
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />

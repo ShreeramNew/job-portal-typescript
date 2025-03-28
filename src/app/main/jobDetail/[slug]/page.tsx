@@ -175,7 +175,7 @@ export default function Page() {
       FetchSimilarJobs();
    }, []);
 
-   const SubHeadingStyle = "font-bold";
+   const SubHeadingStyle = "font-bold mt-4";
 
    return (
       <>
@@ -188,8 +188,8 @@ export default function Page() {
                      <ReactLoading type="spin" width={40} height={40} color="gray" />
                   </div>
                ) : (
-                  <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto md:pt-[8rem]">
-                     <div className="border- w-full border-yellow-600 h-[40%] md:h-[35%] lg:h-[35%]">
+                  <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto md:pt-[6rem]">
+                     <div className="border- w-full border-yellow-600 h-[15rem] ">
                         <JobHighlight
                            key={JobData.id}
                            id={JobData.id}
@@ -206,13 +206,13 @@ export default function Page() {
                            applicants={JobData.applicants}
                         />
                      </div>
-                     <div className="bg-gray-100 shadow-lg w-full h-auto min-h-[70vh] rounded-lg border-2 border-gray-200 mt-[10px] relative">
-                        <div className="w-full h-[11vh] md:h-[6vh] absolute top-[-3vh] text-[1.2rem] md:text-[1rem] md:top-0 border-b- border-gray-900 flex justify-start items-center gap-[10px] pl-[10px]">
+                     <div className="bg-gray-100 shadow-lg w-full h-auto min-h-[70vh] rounded-lg border-2 border-gray-200 mt-[1.4rem] relative">
+                        <div className="w-full h-[11vh] md:h-[6vh] absolute top-[-3vh] text-[1.2rem] md:text-[1.1rem] md:top-0 border-b- border-gray-900 flex justify-start items-center gap-[1.3rem] px-[1rem]">
                            <div
                               onClick={() => SetIsDescriptionOpen(true)}
                               className={`${
                                  isDescriptionOpen ? "border-b-2" : ""
-                              } border-gray-700  pt-[20px] text-gray-700 cursor-pointer`}
+                              } border-gray-400 pb-[3px]  pt-[20px] text-gray-700 cursor-pointer`}
                            >
                               Description
                            </div>
@@ -220,7 +220,7 @@ export default function Page() {
                               onClick={() => SetIsDescriptionOpen(false)}
                               className={`${
                                  isDescriptionOpen ? "" : "border-b-2"
-                              } border-gray-700 pt-[20px]  text-gray-700 cursor-pointer`}
+                              } border-gray-400 pb-[3px] pt-[20px]  text-gray-700 cursor-pointer`}
                            >
                               About
                            </div>
@@ -232,7 +232,7 @@ export default function Page() {
                                  animate={{ opacity: 1, x: 0 }}
                                  exit={{ opacity: 0, x: -100 }}
                                  transition={{ duration: 0.15 }}
-                                 className=" mt-[14%] md:mt-[5%] p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem] overflow-hidden"
+                                 className=" mt-[3rem] p-[1rem] text-gray-700 text-[1rem] md:text-[0.9rem] overflow-hidden"
                               >
                                  <div className=" w-full flex gap-[10px] items-center">
                                     <div className="font-bold">Job Title:</div>
@@ -257,7 +257,7 @@ export default function Page() {
                                     </div>
                                  </div>
                                  <div className=" w-full gap-[10px] items-center">
-                                    <div className="font-bold">Key Responsibilities:</div>
+                                    <div className="font-bold mt-4">Key Responsibilities:</div>
                                     <div>
                                        {JobData.Responsibilities?.map((point: string) => {
                                           if (point !== "") {
@@ -267,7 +267,7 @@ export default function Page() {
                                     </div>
                                  </div>
                                  <div className=" w-full gap-[10px] items-center">
-                                    <div className="font-bold">
+                                    <div className="font-bold mt-4">
                                        Required Skills and Qualifications:
                                     </div>
                                     <div>
@@ -286,9 +286,9 @@ export default function Page() {
                                  animate={{ opacity: 1, x: 0 }}
                                  exit={{ opacity: 0, x: 100 }}
                                  transition={{ duration: 0.2 }}
-                                 className="mt-[14%] md:mt-[5%] p-[10px] text-gray-700 text-[1rem] md:text-[0.8rem]"
+                                 className="mt-[3rem] p-[1rem] text-gray-700 text-[1rem] md:text-[0.9rem]"
                               >
-                                 <div className={SubHeadingStyle}>About Us</div>
+                                 <div className={SubHeadingStyle + "mt-0"}>About Us</div>
                                  <div>{companyData.bio}</div>
                                  <div className={SubHeadingStyle}>Why Work With Us?</div>
                                  <div>{companyData.whyWorkWithUS}</div>
@@ -314,8 +314,8 @@ export default function Page() {
                   </div>
                )}
 
-               <div className="md:col-span-5 md:overflow-y-scroll flex flex-col gap-[10px] p-[10px] bg-gray-200 md:pt-[8rem]">
-                  <div className=" text-gray-800 font-bold">Similar Jobs</div>
+               <div className="md:col-span-5 md:overflow-y-scroll flex flex-col gap-[1rem] p-[10px] bg-gray-50 md:pt-[6rem]">
+                  <div className=" text-gray-800 font-semibold text-[1.3rem]">Similar Jobs</div>
                   {SimilarJobs.map((job) => {
                      return (
                         <JobPostCard
@@ -415,7 +415,7 @@ const JobHighlight = ({
    openings,
    applicants,
 }: PropsType) => {
-   const [appied, setApplied] = useState<boolean>(false);
+   const [applied, setApplied] = useState<boolean>(false);
    const [loading, setLoading] = useState<boolean>(false);
    const router = useRouter();
 
@@ -457,7 +457,7 @@ const JobHighlight = ({
    };
 
    return (
-      <div className=" w-full h-full  rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-lg cursor-pointer ">
+      <div className=" w-full h-full  rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-sm cursor-pointer ">
          <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
             <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
                <PiSuitcaseSimpleLight size={70} color="gray" />
@@ -507,14 +507,14 @@ const JobHighlight = ({
                   htmlType="submit"
                   onClick={handleApply}
                   loading={loading}
-                  disabled={appied}
+                  disabled={applied}
                   className={`  ${
-                     !appied
+                     !applied
                         ? "bg-blue-500 hover:!bg-blue-600 "
-                        : "bg-gray-500 hover:!bg-gray-500 cursor-not-allowed "
-                  } py-[5px] text-xl rounded-md w-full !text-white hover:!text-white`}
+                        : "bg-gray-500 !text-gray-600 hover:!bg-gray-500 cursor-not-allowed "
+                  } text-[1.1rem] w-[6rem] h-[2.5rem]  rounded-md flex justify-center items-center !text-white hover:!text-white`}
                >
-                  {appied ? "Applied" : "Apply"}
+                  {applied ? "Applied" : "Apply"}
                </Button>
             </div>
          </div>
