@@ -1,21 +1,22 @@
 "use client";
-import { Input, message, Space, Dropdown } from "antd";
-const { Search } = Input;
-import { GoArrowUpRight } from "react-icons/go";
-import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import type { GetProps } from "antd";
-import { IoMdPerson } from "react-icons/io";
-import { CiEdit } from "react-icons/ci";
-import { IoLogOutOutline } from "react-icons/io5";
-import { IoTriangle } from "react-icons/io5";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { pushResult, toggleLoading } from "@/features/SearchSlice";
-import useSearchText from "@/helpers/SearchText";
-import { motion, useScroll, useTransform } from "framer-motion";
+const { Search } = Input;
+import Image from "next/image";
+import type { GetProps } from "antd";
 import { div } from "framer-motion/m";
+import { CiEdit } from "react-icons/ci";
+import { useDispatch } from "react-redux";
+import { IoMdPerson } from "react-icons/io";
+import { IoTriangle } from "react-icons/io5";
+import { GoArrowUpRight } from "react-icons/go";
+import useSearchText from "@/helpers/SearchText";
+import { IoLogOutOutline } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
+import { Input, message, Space, Dropdown } from "antd";
+import { usePathname, useRouter } from "next/navigation";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { pushResult, toggleLoading } from "@/features/SearchSlice";
+
 
 export default function NavBar() {
    type SearchProps = GetProps<typeof Input.Search>;
