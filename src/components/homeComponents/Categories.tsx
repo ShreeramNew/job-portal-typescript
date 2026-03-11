@@ -1,118 +1,97 @@
-import { delay } from "framer-motion";
+"use client";
 import CategoryCard from "../cards/CategoryCard";
 import { v4 as uuidv4 } from "uuid";
-export default function Categories() {
-   type category = {
-      imageLink: string;
-      category: string;
-      SearchKeywords: string;
-      span: number;
-      xMove: string;
-      yMove: string;
-      delay: number;
-   };
-   let categories = [
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Sales and Marketing",
-         SearchKeywords: "digital marketing sales strategies market analysis branding",
-         span: 6,
-         xMove: "-1rem",
-         yMove: "0",
-         delay: 0,
-      },
-      {
-         imageLink:
-            "https://plus.unsplash.com/premium_photo-1679923813998-6603ee2466c5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Finance and Accounting",
-         SearchKeywords: "accounting finance budgeting auditing tax analysis",
-         span: 6,
-         xMove: "1rem",
-         yMove: "0",
-         delay: 0.7,
-      },
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Customer Service",
-         SearchKeywords: "customer support client relations service management crm tools",
-         span: 4,
-         xMove: "-1rem",
-         yMove: "0",
-         delay: 0.1,
-      },
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1581092157699-83c90752400a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Engineering",
-         SearchKeywords: "react node software development mechanical civil electrical",
-         span: 4,
-         xMove: "0rem",
-         yMove: "-1rem",
-         delay: 0.6,
-      },
-      {
-         imageLink:
-            "https://plus.unsplash.com/premium_photo-1673953509975-576678fa6710?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Healthcare",
-         SearchKeywords: "nursing doctor patient care medical research health services",
-         span: 4,
-         xMove: "1rem",
-         yMove: "0",
-         delay: 0.3,
-      },
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Education and Training",
-         SearchKeywords: "teaching curriculum training elearning education tools",
-         span: 3,
-         xMove: "-1rem",
-         yMove: "0",
-         delay: 0.5,
-      },
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1551135049-8a33b5883817?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Human Resources",
-         SearchKeywords: "recruitment hr policies employee engagement talent management",
-         span: 6,
-         xMove: "0rem",
-         yMove: "-1rem",
-         delay: 0.2,
-      },
-      {
-         imageLink:
-            "https://images.unsplash.com/photo-1493421419110-74f4e85ba126?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         category: "Creative and Design",
-         SearchKeywords: "graphic design creativity branding photography video editing",
-         span: 3,
-         xMove: "1rem",
-         yMove: "0",
-         delay: 0.4,
-      },
-   ];
+import { motion } from "framer-motion";
 
-   return (
-      <div className=" flex flex-col justify-center items-center mt-[4rem] md:mt-[5rem] lg:max-w-[78rem] md:mx-auto">
-         <h2 className=" m-[20px] text-[1.6rem] md:text-[3rem] text-gray-800">Browse Career Fields</h2>
-         <div className="  flex items-center md:grid grid-cols-12 p-[3%] w-full overflow-x-scroll md:overflow-x-visible gap-[4rem] md:gap-3  h-[35vh] md:h-fit px-[20px] md:px-[5%] border- border-red-900">
-            {categories.map((item: category) => {
-               return (
-                  <CategoryCard
-                     key={uuidv4()}
-                     imageLink={item.imageLink}
-                     category={item.category}
-                     SearchKeywords={item.SearchKeywords}
-                     span={item.span}
-                     xMove={item.xMove}
-                     yMove={item.yMove}
-                     delay={item.delay}
-                  />
-               );
-            })}
-         </div>
+export default function Categories() {
+  const categories = [
+    {
+      imageLink:
+        "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=1200&auto=format&fit=crop",
+      category: "Sales & Marketing",
+      SearchKeywords: "marketing",
+      span: "md:col-span-5",
+      delay: 0.1,
+    },
+    {
+      imageLink:
+        "https://plus.unsplash.com/premium_photo-1679923813998-6603ee2466c5?q=80&w=1200&auto=format&fit=crop",
+      category: "Finance & Accounts",
+      SearchKeywords: "finance",
+      span: "md:col-span-7",
+      delay: 0.2,
+    },
+    {
+      imageLink:
+        "https://images.unsplash.com/photo-1581092157699-83c90752400a?q=80&w=1200&auto=format&fit=crop",
+      category: "Tech Engineering",
+      SearchKeywords: "engineering",
+      span: "md:col-span-4",
+      delay: 0.3,
+    },
+    {
+      imageLink:
+        "https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=1200&auto=format&fit=crop",
+      category: "Customer Support",
+      SearchKeywords: "service",
+      span: "md:col-span-4",
+      delay: 0.4,
+    },
+    {
+      imageLink:
+        "https://plus.unsplash.com/premium_photo-1673953509975-576678fa6710?q=80&w=1200&auto=format&fit=crop",
+      category: "Health & Medical",
+      SearchKeywords: "healthcare",
+      span: "md:col-span-4",
+      delay: 0.5,
+    },
+    {
+      imageLink:
+        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop",
+      category: "Education & Training",
+      SearchKeywords: "education",
+      span: "md:col-span-8",
+      delay: 0.6,
+    },
+    {
+      imageLink:
+        "https://images.unsplash.com/photo-1551135049-8a33b5883817?q=80&w=1200&auto=format&fit=crop",
+      category: "Human Resources",
+      SearchKeywords: "hr",
+      span: "md:col-span-4",
+      delay: 0.7,
+    },
+  ];
+
+  return (
+    <section className="w-full bg-[#08080a] py-24">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Minimalist Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tighter">
+            Browse <span className="text-blue-500">Career Fields</span>
+          </h2>
+          <p className="text-gray-400 text-sm mt-2">
+            Select a category to view high-growth job opportunities.
+          </p>
+        </motion.div>
+
+        {/* GRID LOGIC:
+                1. grid-cols-1: Cards take full width on mobile.
+                2. md:grid-cols-12: Grid activates on desktop.
+                3. auto-rows: Sets mobile height (240px), then desktop height (320px).
+            */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-[240px] md:auto-rows-[320px]">
+          {categories.map((item) => (
+            <CategoryCard key={uuidv4()} {...item} />
+          ))}
+        </div>
       </div>
-   );
+    </section>
+  );
 }
