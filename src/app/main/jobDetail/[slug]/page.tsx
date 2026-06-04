@@ -95,7 +95,7 @@ export default function Page() {
     let API = "/api/getJobDetails?jobId=" + slug;
     try {
       setcontentLoading({ jobsLoading: true, similarJobsLoading: false });
-      let response = await axios(API);
+      let response = await api.get(API);
       let responseDetails = response.data.jobDetails;
 
       //Format some data
