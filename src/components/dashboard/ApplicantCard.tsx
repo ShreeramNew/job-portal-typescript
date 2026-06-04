@@ -3,6 +3,7 @@ import Image from "next/image";
 import { IoMdPerson } from "react-icons/io";
 import { FaRegFileAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import api from "@/config/api";
 import axios from "axios";
 import { useState } from "react";
 import { message } from "antd";
@@ -31,9 +32,9 @@ const ApplicantCard = ({
    const handleSaveOrUnsave = async () => {
       let API: string = "";
       if (saved) {
-         API = process.env.NEXT_PUBLIC_API + "/api/saveApplicants/unsave";
+         API =  "/api/saveApplicants/unsave";
       } else {
-         API = process.env.NEXT_PUBLIC_API + "/api/saveApplicants/save";
+         API =  "/api/saveApplicants/save";
       }
       try {
          let payload = {

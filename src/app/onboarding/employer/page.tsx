@@ -5,6 +5,7 @@ import type { FormProps } from "antd";
 import { Button, Checkbox, message, Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useRef, useState } from "react";
+import api from "@/config/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -43,7 +44,7 @@ export default function Page() {
       const API = "http://localhost:3000/api/onboarding/employer";
       try {
          setLoading(true);
-         await axios.post(API, values, { withCredentials: true });
+         await api.post(API, values, { withCredentials: true });
          router.push("/dashboard/myjob");
          setLoading(false);
       } catch (error: unknown) {

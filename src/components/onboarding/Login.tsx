@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { Button, message, Form, Input } from "antd";
 import type { FormProps } from "antd";
 import { useState } from "react";
+import api from "@/config/api";
 import axios from "axios";
 import Image from "next/image";
 import {
@@ -32,10 +33,10 @@ export default function Login({ isEmployer }: { isEmployer: boolean }) {
       password: values.password,
       isEmployer,
     };
-    let API = process.env.NEXT_PUBLIC_API + "/api/login";
+    let API = "/api/login";
     setLoading(true);
     try {
-      let response = await axios.post(API, payload, { withCredentials: true });
+      let response = await api.post(API, payload, { withCredentials: true });
       if (typeof window !== "undefined") {
         localStorage.setItem("uid", response.data.uid);
         localStorage.setItem("profilePic", response.data.profilePic);

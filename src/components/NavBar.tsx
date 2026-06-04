@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import api from "@/config/api";
 import axios from "axios";
 import { Input, message, Dropdown, Space } from "antd";
 import type { GetProps } from "antd";
@@ -72,7 +73,7 @@ export default function NavBar() {
   const handleLogout = async () => {
     const API = `${process.env.NEXT_PUBLIC_API}/api/logout`;
     try {
-      await axios.post(API, {}, { withCredentials: true });
+      await api.post(API, {}, { withCredentials: true });
       localStorage.clear();
       setUser(null);
       router.push("/");

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, message, Form, Input } from "antd";
 import type { FormProps } from "antd";
+import api from "@/config/api";
 import axios from "axios";
 import Image from "next/image";
 import { MailOutlined, LockOutlined, UserAddOutlined } from "@ant-design/icons";
@@ -35,11 +36,11 @@ export default function Signup({ isEmployer }: { isEmployer: boolean }) {
       password: values.password,
       isEmployer,
     };
-    let API = process.env.NEXT_PUBLIC_API + "/api/signup";
+    let API = "/api/signup";
     setLoading(true);
 
     try {
-      let response = await axios.post(API, payload, { withCredentials: true });
+      let response = await api.post(API, payload, { withCredentials: true });
       if (typeof window !== "undefined") {
         localStorage.setItem("uid", response.data.uid);
 

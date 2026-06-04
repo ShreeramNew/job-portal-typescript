@@ -23,6 +23,7 @@ import {
   GithubOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
+import api from "@/config/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -63,9 +64,9 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
   });
 
   const FetchProfile = async () => {
-    let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user";
+    let API = "/api/getProfile/user";
     try {
-      let response = await axios.get(API, { withCredentials: true });
+      let response = await api.get(API, { withCredentials: true });
       const userData = response.data.user;
 
       setProfilePicURL(userData.profile || profilePicURL);
@@ -90,10 +91,10 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
   }, [isForEdit]);
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    let API = process.env.NEXT_PUBLIC_API + "/api/onboarding/user";
+    let API = "/api/onboarding/user";
     setLoading((prev) => ({ ...prev, submitLoading: true }));
     try {
-      await axios.post(API, values, { withCredentials: true });
+      await api.post(API, values, { withCredentials: true });
       message.success(isForEdit ? "Profile updated!" : "Onboarding complete!");
       router.push("/main/home");
     } catch (error) {
@@ -116,8 +117,8 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
     setLoading((prev) => ({ ...prev, uploadLoading: true }));
 
     try {
-      let API = process.env.NEXT_PUBLIC_API + "/api/upload/profilePic";
-      let response = await axios.post(API, formData, { withCredentials: true });
+      let API = "/api/upload/profilePic";
+      let response = await api.post(API, formData, { withCredentials: true });
       const newPic = response.data.profileDetails.profile;
       setProfilePicURL(newPic);
       if (typeof window !== "undefined") {
@@ -136,8 +137,8 @@ export default function EditUserProfile({ isForEdit }: { isForEdit: boolean }) {
     const formData = new FormData();
     formData.append("resume", file);
     try {
-      let API = process.env.NEXT_PUBLIC_API + "/api/upload/resume";
-      await axios.post(API, formData, { withCredentials: true });
+      let API = "/api/upload/resume";
+      await api.post(API, formData, { withCredentials: true });
       message.success("Resume uploaded successfully");
     } catch (error) {
       message.error("Resume upload failed");

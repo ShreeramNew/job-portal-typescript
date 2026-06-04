@@ -1,5 +1,6 @@
 "use client";
 import { message } from "antd";
+import api from "@/config/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,10 +19,10 @@ export default function Page() {
    const [loading, setLoading] = useState<boolean>(true);
 
    const fetchJobHightlights = async () => {
-      const API = process.env.NEXT_PUBLIC_API + "/api/getJobs/employer";
+      const API =  "/api/getJobs/employer";
       try {
          setLoading(true);
-         let response = await axios.get(API, { withCredentials: true });
+         let response = await api.get(API, { withCredentials: true });
          setJobs(response.data.jobs);
       } catch (error) {
          if (axios.isAxiosError(error)) {

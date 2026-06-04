@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineAdjustmentsVertical } from "react-icons/hi2";
 import { Drawer } from "antd";
 import { useEffect, useState } from "react";
+import api from "@/config/api";
 import axios from "axios";
 import TimeStampToAgo from "@/helpers/TimeStampToAgo";
 import Loading from "react-loading";
@@ -31,10 +32,10 @@ const ListOfJobs = () => {
 
    const dispatch = useDispatch();
    const FetchAllJobs = async () => {
-      const API = process.env.NEXT_PUBLIC_API + "/api/getJobs/allJobs";
+      const API =  "/api/getJobs/allJobs";
       try {
          dispatch(toggleLoading());
-         let response = await axios.get(API);
+         let response = await api.get(API);
          setJobData(response.data.jobs.reverse());
       } catch (error) {
          console.log(error);

@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TiSocialLinkedin } from "react-icons/ti";
 import JobPostCard from "@/components/cards/JobPostCard";
 import { useParams, useRouter } from "next/navigation";
+import api from "@/config/api";
 import axios from "axios";
 import TimeStampToAgo from "@/helpers/TimeStampToAgo";
 import ReactLoading from "react-loading";
@@ -71,10 +72,9 @@ export default function Page() {
   //----------------Fetch Company Details---------------
   const fetchCompanyDetails = async (empId: string) => {
     if (empId) {
-      let API =
-        process.env.NEXT_PUBLIC_API + "/api/getProfile/employer?empId=" + empId;
+      let API = "/api/getProfile/employer?empId=" + empId;
       try {
-        let response = await axios.get(API);
+        let response = await api.get(API);
         setCompanyData(response.data.profile);
       } catch (error: unknown) {
         setIsError(true);
@@ -92,7 +92,7 @@ export default function Page() {
 
   //----------------------------Fetch Job Details------------------------------
   const FetchJobDetails = async () => {
-    let API = process.env.NEXT_PUBLIC_API + "/api/getJobDetails?jobId=" + slug;
+    let API = "/api/getJobDetails?jobId=" + slug;
     try {
       setcontentLoading({ jobsLoading: true, similarJobsLoading: false });
       let response = await axios(API);
@@ -158,11 +158,10 @@ export default function Page() {
   };
   const [SimilarJobs, setSimilarJobs] = useState<EachJobType[]>([]);
   const FetchSimilarJobs = async () => {
-    const API =
-      process.env.NEXT_PUBLIC_API + "/api/getJobs/similarJobs?jobId=" + slug;
+    const API = "/api/getJobs/similarJobs?jobId=" + slug;
     try {
       setcontentLoading({ jobsLoading: false, similarJobsLoading: true });
-      let response = await axios.get(API);
+      let response = await api.get(API);
       setSimilarJobs(response.data.jobs);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -429,7 +428,7 @@ const JobHighlight = ({
   const router = useRouter();
 
   const handleApply = async () => {
-    let API = process.env.NEXT_PUBLIC_API + "/api/applyForJob";
+    let API = "/api/applyForJob";
     try {
       let uid = "";
       if (typeof window !== undefined) {

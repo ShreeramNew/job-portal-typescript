@@ -2,6 +2,7 @@
 import ApplicantCard from "@/components/dashboard/ApplicantCard";
 import applicantDataType from "@/types/ApplicantsDataType";
 import { message } from "antd";
+import api from "@/config/api";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,10 +15,10 @@ export default function Page() {
 
 
    const fetchApplicants = async () => {
-      const API = process.env.NEXT_PUBLIC_API + "/api/getApplicants/applicants?jobId=" + slug;
+      const API =  "/api/getApplicants/applicants?jobId=" + slug;
       try {
          setLoading(true);
-         let response = await axios.get(API, { withCredentials: true });
+         let response = await api.get(API, { withCredentials: true });
          setAppicants(response.data.ApplicantsDetails);
       } catch (error) {
          if (axios.isAxiosError(error)) {

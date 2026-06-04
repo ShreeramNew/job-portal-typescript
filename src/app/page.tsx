@@ -2,6 +2,7 @@
 import ReactLoading from "react-loading";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import api from "@/config/api";
 import axios from "axios";
 import loadingWork from "../../public/loadingWork.svg";
 import Image from "next/image";
@@ -11,9 +12,9 @@ export default function Home() {
   const [showModal, setShowModal] = useState(true);
 
   const CheckAuth = async () => {
-    let API = process.env.NEXT_PUBLIC_API + "/api/getProfile/user/checkLogedIn";
+    let API = "/api/getProfile/user/checkLogedIn";
     try {
-      let response = await axios.get(API, { withCredentials: true });
+      let response = await api.get(API, { withCredentials: true });
 
       if (typeof window !== "undefined") {
         localStorage.setItem("profilePic", response.data.result.profilePic);
