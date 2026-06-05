@@ -40,30 +40,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-lg text-center">
-            <h2 className="text-lg font-semibold mb-3">
-              Server Wake-up Notice
-            </h2>
-
-            <p className="text-sm text-gray-600 mb-4">
-              The backend server is hosted on a free cloud tier. If the
-              application has been inactive, the first request may take{" "}
-              <b>30–60 seconds</b> to wake up.
-            </p>
-
-            <button
-              onClick={() => setShowModal(false)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              OK, Continue
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Loading Screen */}
       <div className="w-full h-[100vh] bg-white flex justify-center items-center">
         <div className="flex flex-col justify-center items-center gap-3 relative w-[200px] h-[200px]">
