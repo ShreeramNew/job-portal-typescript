@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(true);
+  // const [showModal, setShowModal] = useState(true);
 
   const CheckAuth = async () => {
     let API = "/api/getProfile/user/checkLogedIn";
@@ -33,10 +33,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!showModal) {
-      CheckAuth();
-    }
-  }, [showModal]);
+    CheckAuth();
+  }, []);
 
   return (
     <>
