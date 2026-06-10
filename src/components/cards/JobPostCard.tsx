@@ -1,9 +1,12 @@
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
 import { PiSuitcaseSimpleLight } from "react-icons/pi";
 import { GiMoneyStack } from "react-icons/gi";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaBusinessTime } from "react-icons/fa";
 import { IoTimeOutline } from "react-icons/io5";
-import { useRouter } from "next/navigation";
 
 interface PropsType {
    id?: string;
@@ -17,6 +20,7 @@ interface PropsType {
    skills?: string[];
    time?: string;
 }
+
 export default function JobPostCard({
    id,
    role,
@@ -30,48 +34,65 @@ export default function JobPostCard({
    time,
 }: PropsType) {
    const router = useRouter();
+
    return (
       <div
-         className=" w-full min-h-[186px] md:min-h-[166px] rounded-lg border-[1px] border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-sm cursor-pointer "
          onClick={() => router.push("/main/jobDetail/" + id)}
+         className="w-full p-5 sm:p-6 bg-white border border-slate-200/70 rounded-xl hover:border-indigo-200 hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col gap-4 group"
       >
-         <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
-            <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
-               <PiSuitcaseSimpleLight size={70} color="gray" />
-            </div>
-            <div>
-               <div className=" text-[14px] font-bold">{role}</div>
-               <div className="text-[14px] text-gray">{company} </div>
-            </div>
-         </div>
-         <div className="text-[14px] text-gray-800 absolute top-[10px] right-[10px] flex justify-center items-center gap-[4px]">
-            <FaBusinessTime size={20} color="gray" />
-            <div>
-               {minYear}-{maxYear} Year
-            </div>
-         </div>
-         <div className=" flex flex-col justify-start items-start  w-[300px] absolute left-[10px] top-[45%] md:top-[50%] lg:top-[50%]">
-            <div className="flex gap-[5px] justify-center items-center text-[13.4px] text-gray-600">
-               <GiMoneyStack />
+         {/* Top Heading Block */}
+         <div className="flex items-start justify-between gap-4 w-full">
+            <div className="flex gap-4 items-start">
+               {/* Icon Display */}
+               <div className="w-12 h-12 shrink-0 bg-slate-50 border border-slate-200/80 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50/50 transition-colors">
+                  <PiSuitcaseSimpleLight size={24} />
+               </div>
+               
+               {/* Identity Text */}
                <div>
-                  ₹{minSalary}LPA-₹{maxSalary}LPA
+                  <h3 className="font-semibold text-slate-900 text-base sm:text-lg group-hover:text-indigo-600 transition-colors line-clamp-1">
+                     {role || "Job Role"}
+                  </h3>
+                  <p className="text-sm font-medium text-slate-500 mt-0.5">{company || "Company Name"}</p>
                </div>
             </div>
-            <div className="flex gap-[5px] justify-center items-center text-[13.4px] text-gray-600">
-               <MdOutlineLocationOn />
-               <div>{location}</div>
+
+            {/* Experience pill badge */}
+            <div className="shrink-0 flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-full text-xs font-semibold text-slate-600">
+               <FaBusinessTime size={14} className="text-slate-400" />
+               <span>{minYear}-{maxYear} Yrs</span>
             </div>
          </div>
-         <div className=" w-[100%] h-[30px] absolute bottom-[20px] md:bottom-2 overflow-hidden flex gap-[14px] items-center pl-[10px] border- border-red-900 overf">
-            {skills?.map((skill) => {
-               return <SkillCard title={skill} />;
-            })}
-         </div>
-         <div className=" flex justify-center items-center absolute bottom-0 md:bottom-2 right-[10px]">
-            <div>
-               <IoTimeOutline size={15} />
+
+         {/* Core Context Block (Salary & Location) */}
+         <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600 font-medium">
+            <div className="flex items-center gap-1.5">
+               <GiMoneyStack size={16} className="text-slate-400 shrink-0" />
+               <span>₹{minSalary}LPA - ₹{maxSalary}LPA</span>
             </div>
-            <div className="text-[13px] text-gray-800 ">{time} ago</div>
+            <div className="flex items-center gap-1.5">
+               <MdOutlineLocationOn size={16} className="text-slate-400 shrink-0" />
+               <span>{location || "Location unlisted"}</span>
+            </div>
+         </div>
+
+         {/* Visual Section Divider */}
+         <div className="h-px w-full bg-slate-100" />
+
+         {/* Footer Row (Skills & Timestamp) */}
+         <div className="flex items-center justify-between gap-4 flex-wrap w-full mt-1">
+            {/* Tech Tags */}
+            <div className="flex items-center gap-2 flex-wrap max-w-[75%]">
+               {skills?.map((skill, idx) => (
+                  <SkillCard key={idx} title={skill.trim()} />
+               ))}
+            </div>
+
+            {/* Post Timing */}
+            <div className="flex items-center gap-1 text-xs font-medium text-slate-400 ml-auto shrink-0">
+               <IoTimeOutline size={14} />
+               <span>{time || "Recent"} ago</span>
+            </div>
          </div>
       </div>
    );
@@ -79,8 +100,8 @@ export default function JobPostCard({
 
 const SkillCard = ({ title }: { title: string }) => {
    return (
-      <div className="text-[13px] h-[20px] bg-gray-300 p-[10px] px-[13px] flex justify-center items-center rounded-xl text-gray-700 pb-[12px] flex-shrink-0">
-         <div>{title}</div>
-      </div>
+      <span className="text-xs font-medium px-2.5 py-1 bg-slate-50 border border-slate-200/60 rounded-md text-slate-600 hover:bg-slate-100 transition-colors">
+         {title}
+      </span>
    );
 };

@@ -11,6 +11,8 @@ const useSearchText = () => {
    const router = useRouter();
    const dispatch = useDispatch();
    const SearchText = async (text: string) => {
+      console.log("Yes I am coming here!");
+      
       let API: string = "";
       if (text == "") {
          API =  "/api/getJobs/allJobs";
@@ -22,6 +24,7 @@ const useSearchText = () => {
          let response = await api.get(API);
          dispatch(pushResult(response.data.jobs.reverse()));
       } catch (error) {
+         console.log(error)
          if (axios.isAxiosError(error)) {
             message.error(error.response?.data.msg);
          }

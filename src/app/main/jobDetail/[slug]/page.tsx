@@ -1,24 +1,24 @@
 "use client";
-import { useEffect, useState } from "react";
-import { PiSuitcaseSimpleLight } from "react-icons/pi";
-import { GiMoneyStack } from "react-icons/gi";
-import { MdOutlineLocationOn, MdLocalPhone } from "react-icons/md";
-import { FaBusinessTime } from "react-icons/fa";
-import { FaUserTie } from "react-icons/fa6";
-import { HiOutlineDocumentText } from "react-icons/hi2";
-import { BsCaretRightFill } from "react-icons/bs";
-import { CiMail } from "react-icons/ci";
-import { TbWorld } from "react-icons/tb";
+
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { TiSocialLinkedin } from "react-icons/ti";
-import JobPostCard from "@/components/cards/JobPostCard";
-import { useParams, useRouter } from "next/navigation";
-import api from "@/config/api";
 import axios from "axios";
+import { message } from "antd";
+import { BsCaretRightFill } from "react-icons/bs";
+
+// Separate Decomposed Custom Components
+import JobHighlight from "@/components/cards/JobHighlight";
+import ContactCard from "@/components/cards/ContactCard";
+import JobPostCard from "@/components/cards/JobPostCard";
+import {
+  JobDetailSkeleton,
+  SidebarSkeleton,
+} from "@/components/loading/DetailsSkeleton";
+
+// Services & Global Helpers
+import api from "@/config/api";
 import TimeStampToAgo from "@/helpers/TimeStampToAgo";
-import ReactLoading from "react-loading";
-import { Button, message } from "antd";
-import Cookies from "js-cookie";
 
 interface JobDataType {
   id?: string;
@@ -32,7 +32,7 @@ interface JobDataType {
   skills?: string[];
   time?: string;
   Responsibilities?: string[];
-  Requiremnets?: string[];
+  Requirements?: string[];
   openings?: number;
   jobType?: string;
   applicants?: number;
@@ -55,89 +55,18 @@ interface CompanyData {
 }
 
 export default function Page() {
-  type loadingType = {
-    jobsLoading: boolean;
-    similarJobsLoading: boolean;
-  };
+  type loadingType = { jobsLoading: boolean; similarJobsLoading: boolean };
+
   const { slug } = useParams();
   const [isDescriptionOpen, SetIsDescriptionOpen] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-
+  const [companyData, setCompanyData] = useState<CompanyData>({});
+  const [JobData, setJobData] = useState<JobDataType>({});
   const [contentLoading, setcontentLoading] = useState<loadingType>({
     jobsLoading: false,
     similarJobsLoading: false,
   });
-  const [companyData, setCompanyData] = useState<CompanyData>({});
 
-  //----------------Fetch Company Details---------------
-  const fetchCompanyDetails = async (empId: string) => {
-    if (empId) {
-      let API = "/api/getProfile/employer?empId=" + empId;
-      try {
-        let response = await api.get(API);
-        setCompanyData(response.data.profile);
-      } catch (error: unknown) {
-        setIsError(true);
-        if (axios.isAxiosError(error)) {
-          message.error(error.response?.data.msg);
-        }
-      }
-    } else {
-      alert("Unauthorized access!");
-    }
-  };
-
-  //----------------------Perticular Job-------------------------
-  const [JobData, setJobData] = useState<JobDataType>({});
-
-  //----------------------------Fetch Job Details------------------------------
-  const FetchJobDetails = async () => {
-    let API = "/api/getJobDetails?jobId=" + slug;
-    try {
-      setcontentLoading({ jobsLoading: true, similarJobsLoading: false });
-      let response = await api.get(API);
-      let responseDetails = response.data.jobDetails;
-
-      //Format some data
-      let requirements = responseDetails.requirements
-        .replace(/\n/g, "")
-        .split(".")
-        .map((req: String) => req.trim()); // Remove \n and split by periods
-      let responsibilities = responseDetails.responsibilities
-        .replace(/\n/g, "")
-        .split(".")
-        .map((req: String) => req.trim()); // Remove \n and split by periods
-      let Skills = responseDetails.skills
-        ? responseDetails.skills.split(",")
-        : ["General"];
-      let DataToSet = {
-        id: responseDetails._id,
-        role: responseDetails.jobTitle,
-        company: responseDetails.company,
-        minYear: responseDetails.minExp,
-        maxYear: responseDetails.maxExp,
-        minSalary: responseDetails.minSalary,
-        maxSalary: responseDetails.maxSalary,
-        location: responseDetails.location,
-        skills: Skills,
-        time: "",
-        Responsibilities: responsibilities,
-        Requiremnets: requirements,
-        openings: responseDetails.openings,
-        jobType: responseDetails.jobType,
-        applicants: responseDetails.applicants,
-      };
-      setJobData(DataToSet);
-      fetchCompanyDetails(responseDetails.employerId);
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.msg);
-      }
-    }
-    setcontentLoading({ jobsLoading: false, similarJobsLoading: false });
-  };
-
-  //-----------------------Similar Jobs---------------------------
   type EachJobType = {
     _id: string;
     employerId: string;
@@ -157,175 +86,260 @@ export default function Page() {
     postedOn: string;
   };
   const [SimilarJobs, setSimilarJobs] = useState<EachJobType[]>([]);
-  const FetchSimilarJobs = async () => {
-    const API = "/api/getJobs/similarJobs?jobId=" + slug;
+
+  const fetchCompanyDetails = async (empId: string) => {
+    if (!empId) return;
     try {
-      setcontentLoading({ jobsLoading: false, similarJobsLoading: true });
-      let response = await api.get(API);
+      const response = await api.get("/api/getProfile/employer?empId=" + empId);
+      setCompanyData(response.data.profile);
+    } catch (error) {
+      setIsError(true);
+      if (axios.isAxiosError(error)) message.error(error.response?.data.msg);
+    }
+  };
+
+  const FetchJobDetails = async () => {
+    try {
+      setcontentLoading((prev) => ({ ...prev, jobsLoading: true }));
+      const response = await api.get("/api/getJobDetails?jobId=" + slug);
+      const details = response.data.jobDetails;
+
+      const formatTextToArray = (rawText: string | undefined): string[] => {
+        if (!rawText) return [];
+        
+        // Splits lookahead sentences safely on trailing space contexts (Preserves terms like Node.js, Pvt Ltd.)
+        const parsedArray = rawText
+          .split(/(?<=[.!?])\s+/)
+          .map((item: string) => item.trim())
+          .filter((item: string) => item.length > 0);
+
+        return parsedArray.length > 0 ? parsedArray : [rawText.trim()];
+      };
+
+      const requirements = formatTextToArray(details.requirements);
+      const responsibilities = formatTextToArray(details.responsibilities);
+      const skills = details.skills ? details.skills.split(",") : ["General"];
+
+      setJobData({
+        id: details._id,
+        role: details.jobTitle,
+        company: details.company,
+        minYear: details.minExp,
+        maxYear: details.maxExp,
+        minSalary: details.minSalary,
+        maxSalary: details.maxSalary,
+        location: details.location,
+        skills,
+        time: "",
+        Responsibilities: responsibilities,
+        Requirements: requirements,
+        openings: details.openings,
+        jobType: details.jobType,
+        applicants: details.applicants,
+      });
+
+      fetchCompanyDetails(details.employerId);
+    } catch (error) {
+      if (axios.isAxiosError(error)) console.error(error.response?.data.msg);
+    } finally {
+      setcontentLoading((prev) => ({ ...prev, jobsLoading: false }));
+    }
+  };
+
+  const FetchSimilarJobs = async () => {
+    try {
+      setcontentLoading((prev) => ({ ...prev, similarJobsLoading: true }));
+      const response = await api.get("/api/getJobs/similarJobs?jobId=" + slug);
       setSimilarJobs(response.data.jobs);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        message.error(error.response?.data.msg);
-      }
+      if (axios.isAxiosError(error)) message.error(error.response?.data.msg);
       setIsError(true);
+    } finally {
+      setcontentLoading((prev) => ({ ...prev, similarJobsLoading: false }));
     }
-    setcontentLoading({ jobsLoading: false, similarJobsLoading: false });
   };
 
   useEffect(() => {
     FetchJobDetails();
     FetchSimilarJobs();
-  }, []);
+  }, [slug]);
 
-  const SubHeadingStyle = "font-bold mt-4";
+  if (isError) {
+    return (
+      <div className="w-full min-h-[80vh] flex flex-col justify-center items-center text-slate-500 gap-2">
+        <span className="text-lg font-medium">Unable to load job details.</span>
+        <p className="text-sm text-slate-400">
+          Please try refreshing the stream layout.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {isError ? (
-        <div className=" w-full h-[90vh] flex justify-center items-center">
-          Error
-        </div>
-      ) : (
-        <div className="w-screen h-[89vh] md:h-screen border- border-red-900 grid grid-cols-1  md:grid-cols-12  overflow-x-hidden">
+    <div className="w-full min-h-screen bg-slate-50/50 pt-[80px] md:pt-[96px]">
+      <div className="max-w-7xl w-full mx-auto px-4 py-6 md:py-8 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        
+        {/* LEFT COLUMN COMPONENT LAYER */}
+        <div className="md:col-span-7 w-full md:sticky md:top-[116px] max-h-none md:max-h-[calc(100vh-140px)] md:overflow-y-auto pr-0 md:pr-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {contentLoading.jobsLoading ? (
-            <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto flex justify-center items-center">
-              <ReactLoading type="spin" width={40} height={40} color="gray" />
-            </div>
+            <JobDetailSkeleton />
           ) : (
-            <div className="md:col-span-7  md:overflow-y-scroll p-[10px] md:p-[20px] overflow-x-hidden h-[100vh] md:h-auto md:pt-[6rem]">
-              <div className="border- w-full border-yellow-600 h-[15rem] ">
-                <JobHighlight
-                  key={JobData.id}
-                  id={JobData.id}
-                  role={JobData.role}
-                  company={JobData.company}
-                  minYear={JobData.minYear}
-                  maxYear={JobData.maxYear}
-                  minSalary={JobData.minSalary}
-                  maxSalary={JobData.maxSalary}
-                  location={JobData.location}
-                  skills={JobData.skills?.slice(0, 5)}
-                  time={JobData.time}
-                  openings={JobData.openings}
-                  applicants={JobData.applicants}
-                />
-              </div>
-              <div className="bg-gray-100 shadow-lg w-full h-auto min-h-[70vh] rounded-lg border-2 border-gray-200 mt-[1.4rem] relative">
-                <div className="w-full h-[11vh] md:h-[6vh] absolute top-[-3vh] text-[1.2rem] md:text-[1.1rem] md:top-0 border-b- border-gray-900 flex justify-start items-center gap-[1.3rem] px-[1rem]">
-                  <div
+            <div className="flex flex-col gap-6 pb-4">
+              <JobHighlight {...JobData} />
+
+              <div className="w-full bg-white border border-slate-200/70 rounded-xl shadow-sm overflow-hidden p-5 md:p-6">
+                <div className="flex gap-6 border-b border-slate-100 pb-3">
+                  <button
                     onClick={() => SetIsDescriptionOpen(true)}
-                    className={`${
-                      isDescriptionOpen ? "border-b-2" : ""
-                    } border-gray-400 pb-[3px]  pt-[20px] text-gray-700 cursor-pointer`}
+                    className={`pb-2 text-sm font-semibold transition-all relative ${isDescriptionOpen ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
                   >
-                    Description
-                  </div>
-                  <div
+                    Job Description
+                    {isDescriptionOpen && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
+                      />
+                    )}
+                  </button>
+                  <button
                     onClick={() => SetIsDescriptionOpen(false)}
-                    className={`${
-                      isDescriptionOpen ? "" : "border-b-2"
-                    } border-gray-400 pb-[3px] pt-[20px]  text-gray-700 cursor-pointer`}
+                    className={`pb-2 text-sm font-semibold transition-all relative ${!isDescriptionOpen ? "text-indigo-600" : "text-slate-400 hover:text-slate-600"}`}
                   >
-                    About
-                  </div>
+                    About Company
+                    {!isDescriptionOpen && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"
+                      />
+                    )}
+                  </button>
                 </div>
-                <AnimatePresence mode="wait">
-                  {isDescriptionOpen ? (
-                    <motion.div
-                      key="description"
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.15 }}
-                      className=" mt-[3rem] p-[1rem] text-gray-700 text-[1rem] md:text-[0.9rem] overflow-hidden"
-                    >
-                      <div className=" w-full flex gap-[10px] items-center">
-                        <div className="font-bold">Job Title:</div>
-                        <div>{JobData.role}</div>
-                      </div>
-                      <div className=" w-full flex gap-[10px] items-center">
-                        <div className="font-bold">Company:</div>
-                        <div>{JobData.company}</div>
-                      </div>
-                      <div className=" w-full flex gap-[10px] items-center">
-                        <div className="font-bold"> Location:</div>
-                        <div> {JobData.location}</div>
-                      </div>
-                      <div className=" w-full flex gap-[10px] items-center">
-                        <div className="font-bold">Job Type:</div>
-                        <div>{JobData.jobType}</div>
-                      </div>
-                      <div className=" w-full flex gap-[10px] items-center">
-                        <div className="font-bold">Salary:</div>
+
+                <div className="mt-6 text-sm text-slate-600 leading-relaxed">
+                  <AnimatePresence mode="wait">
+                    {isDescriptionOpen ? (
+                      <motion.div
+                        key="description"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="flex flex-col gap-5"
+                      >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 font-medium">
+                          <div className="flex gap-2">
+                            <span className="text-slate-400">Title:</span>{" "}
+                            <span className="text-slate-800 font-semibold">
+                              {JobData.role}
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className="text-slate-400">Company:</span>{" "}
+                            <span className="text-slate-800">
+                              {JobData.company}
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className="text-slate-400">Location:</span>{" "}
+                            <span className="text-slate-800">
+                              {JobData.location}
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className="text-slate-400">Job Type:</span>{" "}
+                            <span className="text-slate-800">
+                              {JobData.jobType || "Full-time"}
+                            </span>
+                          </div>
+                        </div>
+
                         <div>
-                          {JobData.minSalary}LPA to {JobData.maxSalary}LPA
+                          <h4 className="font-bold text-slate-900 text-base mb-3">
+                            Key Responsibilities:
+                          </h4>
+                          <div className="flex flex-col gap-2.5">
+                            {JobData.Responsibilities && JobData.Responsibilities.length > 0 ? (
+                              JobData.Responsibilities.map((point, index) => (
+                                <BulletPoints key={index} point={point} />
+                              ))
+                            ) : (
+                              <p className="text-slate-400 italic">No specific responsibilities specified.</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className=" w-full gap-[10px] items-center">
-                        <div className="font-bold mt-4">
-                          Key Responsibilities:
-                        </div>
+
                         <div>
-                          {JobData.Responsibilities?.map((point: string) => {
-                            if (point !== "") {
-                              return <BulletPoints point={point} />;
-                            }
-                          })}
+                          <h4 className="font-bold text-slate-900 text-base mb-3">
+                            Required Qualifications:
+                          </h4>
+                          <div className="flex flex-col gap-2.5">
+                            {JobData.Requirements && JobData.Requirements.length > 0 ? (
+                              JobData.Requirements.map((point, index) => (
+                                <BulletPoints key={index} point={point} />
+                              ))
+                            ) : (
+                              <p className="text-slate-400 italic">No explicit requirements specified.</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className=" w-full gap-[10px] items-center">
-                        <div className="font-bold mt-4">
-                          Required Skills and Qualifications:
-                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="about"
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="flex flex-col gap-5"
+                      >
                         <div>
-                          {JobData.Requiremnets?.map((point: string) => {
-                            if (point !== "") {
-                              return <BulletPoints point={point} />;
-                            }
-                          })}
+                          <h4 className="font-bold text-slate-900 text-base mb-2">
+                            About Us
+                          </h4>
+                          <p>
+                            {companyData.bio || "No bio details configured."}
+                          </p>
                         </div>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="about"
-                      initial={{ opacity: 0, x: 100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 100 }}
-                      transition={{ duration: 0.2 }}
-                      className="mt-[3rem] p-[1rem] text-gray-700 text-[1rem] md:text-[0.9rem]"
-                    >
-                      <div className={SubHeadingStyle + "mt-0"}>About Us</div>
-                      <div>{companyData.bio}</div>
-                      <div className={SubHeadingStyle}>Why Work With Us?</div>
-                      <div>{companyData.whyWorkWithUS}</div>
-                      <div className={SubHeadingStyle}>Our Team</div>
-                      <div>{companyData.aboutTeam}</div>
-                      <div className={SubHeadingStyle}>Work Environment</div>
-                      <div>{companyData.aboutEnvoirnment}</div>
-                      <div className={SubHeadingStyle}>Location</div>
-                      <div>{companyData.location}</div>
-                      <div className={SubHeadingStyle}>Contact Us</div>
-                      <div>
-                        <ContactCard
-                          email={companyData.email}
-                          phone={companyData.phone}
-                          website={companyData.website}
-                          social={companyData.linkedin}
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        {companyData.whyWorkWithUS && (
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-base mb-2">
+                              Why Work With Us?
+                            </h4>
+                            <p>{companyData.whyWorkWithUS}</p>
+                          </div>
+                        )}
+                        <div className="h-px bg-slate-100 my-1" />
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-base mb-3">
+                            Corporate Contacts
+                          </h4>
+                          <ContactCard
+                            email={companyData.email}
+                            phone={companyData.phone}
+                            website={companyData.website}
+                            social={companyData.linkedin}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
           )}
+        </div>
 
-          <div className="md:col-span-5 md:overflow-y-scroll flex flex-col gap-[1rem] p-[10px] bg-gray-50 md:pt-[6rem]">
-            <div className=" text-gray-800 font-semibold text-[1.3rem]">
-              Similar Jobs
-            </div>
-            {SimilarJobs.map((job) => {
-              return (
+        {/* RIGHT SIDEBAR COLUMN */}
+        <aside className="md:col-span-5 flex flex-col gap-4 w-full">
+          <h3 className="text-slate-900 font-bold text-lg px-1">
+            Similar Strategic Openings
+          </h3>
+          <div className="flex flex-col gap-4 w-full">
+            {contentLoading.similarJobsLoading ? (
+              <>
+                <SidebarSkeleton />
+                <SidebarSkeleton />
+              </>
+            ) : (
+              SimilarJobs.map((job) => (
                 <JobPostCard
                   key={job._id}
                   id={job._id}
@@ -336,204 +350,23 @@ export default function Page() {
                   minSalary={job.minSalary}
                   maxSalary={job.maxSalary}
                   location={job.location}
-                  skills={job.skills.split(",").slice(0, 4)}
+                  skills={job.skills?.split(",").slice(0, 4)}
                   time={TimeStampToAgo(job.postedOn)}
                 />
-              );
-            })}
+              ))
+            )}
           </div>
-        </div>
-      )}
-    </>
+        </aside>
+      </div>
+    </div>
   );
 }
 
-const BulletPoints = ({ point }: { point: string }) => {
-  return (
-    <div className=" flex w-full border- border-red-900">
-      <div className="mt-[1%] md:mt-[0.2%]">
-        <BsCaretRightFill color="gray" size={15} />
-      </div>
-      {point}
-    </div>
-  );
-};
-
-interface ConatctPropstype {
-  email?: string;
-  phone?: number;
-  social?: string;
-  website?: string;
-}
-const ContactCard = ({ email, phone, social, website }: ConatctPropstype) => {
-  return (
-    <div className=" cursor-pointer">
-      <div className="flex items-center gap-[5px]">
-        <CiMail size={17} />
-        <a href={`mailto:${email}`} className="hover:underline">
-          {email}
-        </a>
-      </div>
-      <div className="flex items-center gap-[5px]">
-        <MdLocalPhone size={17} />
-        <div>{phone}</div>
-      </div>
-      <div className="flex items-center gap-[5px]">
-        <TbWorld size={17} />
-        <a href={website} target="_blank" className="hover:underline">
-          {website}
-        </a>
-      </div>
-      <div className="flex items-center gap-[5px]">
-        <TiSocialLinkedin size={17} />
-        <a href={social} target="_blank" className="hover:underline">
-          {social}
-        </a>
-      </div>
-    </div>
-  );
-};
-
-interface PropsType {
-  id?: string;
-  role?: string;
-  company?: string;
-  minYear?: number;
-  maxYear?: number;
-  minSalary?: number;
-  maxSalary?: number;
-  location?: string;
-  skills?: string[];
-  time?: string;
-  openings?: number;
-  applicants?: number;
-}
-
-const JobHighlight = ({
-  id,
-  role,
-  company,
-  minYear,
-  maxYear,
-  minSalary,
-  maxSalary,
-  location,
-  skills,
-  time,
-  openings,
-  applicants,
-}: PropsType) => {
-  const [applied, setApplied] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-
-  const handleApply = async () => {
-    let API = "/api/applyForJob";
-    try {
-      let uid = "";
-      if (typeof window !== undefined) {
-        uid = localStorage.getItem("uid") ?? "";
-      }
-      if (uid !== "") {
-        setLoading(true);
-        await axios.patch(
-          API,
-          {
-            jobId: id,
-          },
-          { withCredentials: true },
-        );
-        setApplied(true);
-      } else {
-        if (typeof window !== undefined) {
-          localStorage.setItem(
-            "applying",
-            JSON.stringify({
-              isApplying: true,
-              jobId: id,
-            }),
-          );
-        }
-        router.push("/login");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        message.error(error.response?.data.msg || "Failed to Apply!");
-      }
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className=" w-full h-full  rounded-lg border-2 border-gray-200 flex justify-center items-center relative bg-gray-100 shadow-sm cursor-pointer ">
-      <div className=" flex justify-center items-center gap-[10px] absolute left-[10px] top-[10%] ">
-        <div className="border-2 w-[50px] h-[50px] border-gray-400 p-[10px] rounded-lg flex justify-center items-center">
-          <PiSuitcaseSimpleLight size={70} color="gray" />
-        </div>
-        <div>
-          <div className=" text-[14px] font-bold">{role}</div>
-          <div className="text-[14px] text-gray">{company} </div>
-        </div>
-      </div>
-      <div className="text-[14px] text-gray-800 absolute top-[10%] right-[10px] flex justify-center items-center gap-[4px]">
-        <FaBusinessTime size={20} color="gray" />
-        <div>
-          {minYear}-{maxYear} Year
-        </div>
-      </div>
-      <div className=" flex flex-col justify-start items-start  w-[300px] absolute left-[10px] top-[35%] md:top-[45%] lg:top-[45%]">
-        <div className="flex gap-[5px] justify-center items-center text-[13.4px] text-gray-600">
-          <GiMoneyStack />
-          <div>
-            ₹{minSalary}LPA-₹{maxSalary}LPA
-          </div>
-        </div>
-        <div className="flex gap-[5px] justify-center items-center text-[13.4px] text-gray-600">
-          <MdOutlineLocationOn />
-          <div>{location}</div>
-        </div>
-      </div>
-      <div className=" w-full h-[30%] md:h-[30px] absolute bottom-[20%] md:bottom-[20%] lg:bottom-[20%] overflow-hidden grid grid-cols-[1fr_1fr_1fr_1fr] md:flex gap-[10px] gap-y-[0px] md:gap-[14px] items-center pl-[10px] border- border-red-900">
-        {skills?.map((skill) => {
-          return <SkillCard title={skill} />;
-        })}
-      </div>
-      <div className=" border- border-gray-900 w-full h-[20%] absolute bottom-0 left-[20%] md:left-6 flex justify-between items-center px-[30px] pr-[86px] md:pr-[60px] ">
-        <div className="flex justify-center items-center gap-[10px] md:gap-[20px] w-[30%] border- border-green-900 text-gray-700">
-          <div className=" flex justify-center items-center gap-[2px]">
-            <FaUserTie />
-            <div>Openings:{openings}</div>
-          </div>
-          <div className="flex justify-center items-center gap-[2px]">
-            <HiOutlineDocumentText />
-            <div>Applicants:{160}</div>
-          </div>
-        </div>
-
-        <div className=" md:pb-[10px]">
-          <Button
-            htmlType="submit"
-            onClick={handleApply}
-            loading={loading}
-            disabled={applied}
-            className={`  ${
-              !applied
-                ? "bg-blue-500 hover:!bg-blue-600 "
-                : "bg-gray-500 !text-gray-600 hover:!bg-gray-500 cursor-not-allowed "
-            } text-[1.1rem] w-[6rem] h-[2.5rem]  rounded-md flex justify-center items-center !text-white hover:!text-white`}
-          >
-            {applied ? "Applied" : "Apply"}
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SkillCard = ({ title }: { title: string }) => {
-  return (
-    <div className="text-[13px] h-[20px] bg-gray-300 p-[10px] px-[13px] flex justify-center items-center rounded-xl text-gray-700 pb-[12px]">
-      <div>{title}</div>
-    </div>
-  );
-};
+const BulletPoints = ({ point }: { point: string }) => (
+  <div className="flex items-start gap-2.5 text-slate-600">
+    <span className="mt-1 text-indigo-500 shrink-0">
+      <BsCaretRightFill size={12} />
+    </span>
+    <p className="text-sm leading-normal">{point}</p>
+  </div>
+);
