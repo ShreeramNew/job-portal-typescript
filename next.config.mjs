@@ -9,7 +9,7 @@ const nextConfig = {
             // Intercepts frontend calls to /api/proxy/...
             source: '/api/proxy/:path*',
             // Redirects them cleanly to your Express server IP behind the scenes
-            destination: `${process.env.NEXT_PUBLIC_BACKEND}/api/:path*`,
+            destination: `${process.env.NEXT_PUBLIC_BACKEND}/:path*`,
          },
       ];
    },
